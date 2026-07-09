@@ -5,83 +5,67 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import "./styles.css";
 
 const profile = {
-  name: "[YOUR NAME]",
-  role: "[YOUR ROLE]",
-  tagline: "[YOUR TAGLINE]",
-  location: "[YOUR LOCATION]",
-  email: "[YOUR EMAIL]",
-  availability: "Available for select product and portfolio work",
+  name: "Cao Van Ha",
+  role: "AI Engineer",
+  tagline: "Building RAG systems, NLP tools, and full-stack AI products for education.",
+  location: "Vietnam",
+  email: "caov77029@gmail.com",
+  availability: "Open to AI engineering internships, research work, and AI product collaboration",
   metrics: [
-    { value: "03", label: "launch modes" },
-    { value: "14+", label: "interaction states" },
-    { value: "0.7s", label: "motion rhythm" }
+    { value: "RAG", label: "core focus" },
+    { value: "UTC", label: "research context" },
+    { value: "25-26", label: "student research" }
   ],
   socials: [
-    { label: "GitHub", href: "#" },
-    { label: "LinkedIn", href: "#" },
-    { label: "Social", href: "#" }
+    { label: "GitHub", href: "https://github.com/CaoRIV" },
+    { label: "X", href: "https://x.com/Cao744604355049" }
   ],
   traits: [
-    "Systems thinker",
-    "Motion-minded builder",
-    "Calm collaborator",
-    "Prototype to polish"
+    "RAG-focused builder",
+    "NLP problem solver",
+    "Full-stack developer",
+    "Research-minded learner"
   ],
   skills: [
     {
-      group: "Product",
-      items: ["Discovery", "UX strategy", "Story mapping", "Design systems"]
+      group: "AI & Data",
+      items: ["RAG Systems", "LLM Integration", "PhoBERT", "TF-IDF", "Data Mining", "Sentiment Analysis"]
     },
     {
-      group: "Frontend",
-      items: ["React", "Next.js", "Animation", "Accessibility"]
+      group: "Full-stack",
+      items: ["FastAPI", "Next.js", "React", "Node.js", "WebSocket", "TypeScript"]
     },
     {
-      group: "Craft",
-      items: ["Micro-interactions", "Performance", "Visual QA", "Responsive UI"]
+      group: "Tools",
+      items: ["Python", "Docker", "Redis", "PostgreSQL", "Git", "VS Code"]
     }
   ],
   projects: [
     {
-      title: "[PROJECT ONE]",
+      title: "IT Smart Assistant",
       description:
-        "An immersive launch experience that turns product complexity into a clear, tactile scroll story.",
-      stack: "React, Framer Motion, CMS",
-      role: "Lead design engineer",
-      href: "#"
-    },
-    {
-      title: "[PROJECT TWO]",
-      description:
-        "A polished analytics workspace with fast interactions, focused hierarchy, and delightful state transitions.",
-      stack: "Next.js, TypeScript, API design",
-      role: "Frontend architect",
-      href: "#"
-    },
-    {
-      title: "[PROJECT THREE]",
-      description:
-        "A brand-forward portfolio system built around editorial pacing, reusable content blocks, and smooth reveals.",
-      stack: "React, CSS, Motion",
-      role: "Creative developer",
-      href: "#"
+        "Developing an AI assistant to support lecturers and students at the Faculty of Information Technology for Student Scientific Research 2025-2026 at UTC.",
+      stack: "Chatbot AI, RAG architecture, backend development",
+      role: "Backend and RAG architecture developer",
+      href: "https://github.com/CaoRIV/IT-Smart-Assistant",
+      linkLabel: "GitHub"
     }
   ],
   timeline: [
     {
-      year: "2026",
-      title: "[CURRENT ROLE]",
-      body: "Designing and shipping thoughtful digital experiences with a focus on story, interaction, and performance."
+      year: "Year 3",
+      title: "Started learning AI",
+      body: "Focused on AI engineering foundations, natural language processing, LLM integration, and building practical systems around real user needs."
     },
     {
-      year: "2024",
-      title: "[MILESTONE]",
-      body: "Led a cross-functional project from early concept through launch, turning ambiguity into a confident product."
+      year: "2025-26",
+      title: "IT Smart Assistant research project",
+      body: "Developing backend services and RAG architecture for an AI assistant that supports lecturers and students at UTC's Faculty of Information Technology."
     },
     {
-      year: "2022",
-      title: "[EDUCATION OR EXPERIENCE]",
-      body: "Built the foundation across engineering, design craft, research, and communication."
+      year: "Now",
+      title: "Current focus",
+      body: "Exploring AI and LLM integration, educational technology, Vietnamese NLP, sentiment analysis, full-stack development, and data engineering."
     }
   ]
 };
@@ -184,7 +168,7 @@ function Hero({ reduceMotion }) {
           </motion.div>
           <motion.div className="hero-note" variants={fadeUp}>
             <span>Based in {profile.location}</span>
-            <strong>Built for clear stories, refined interfaces, and useful motion.</strong>
+            <strong>Focused on practical AI systems that combine retrieval, language understanding, and reliable backend architecture.</strong>
           </motion.div>
         </motion.div>
 
@@ -206,7 +190,7 @@ function Hero({ reduceMotion }) {
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>01</span>
-            <strong>Frame</strong>
+            <strong>Retrieve</strong>
           </motion.div>
           <motion.div
             className="stage-card stage-card-b"
@@ -214,7 +198,7 @@ function Hero({ reduceMotion }) {
             transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>02</span>
-            <strong>Make</strong>
+            <strong>Reason</strong>
           </motion.div>
           <motion.div
             className="stage-card stage-card-c"
@@ -222,7 +206,7 @@ function Hero({ reduceMotion }) {
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>03</span>
-            <strong>Learn</strong>
+            <strong>Build</strong>
           </motion.div>
           <div className="stage-path" />
           <div className="stage-map">
@@ -234,7 +218,7 @@ function Hero({ reduceMotion }) {
             ))}
           </div>
           <div className="stage-core">
-            <span>Living portfolio system</span>
+            <span>RAG + NLP systems</span>
           </div>
         </motion.div>
       </div>
@@ -261,8 +245,8 @@ function SectionIntro({ label, title, children }) {
 function About() {
   return (
     <section id="about" className="content-section about-section">
-      <SectionIntro label="About" title="A portfolio that unfolds like a working process.">
-        I am {profile.name}, a {profile.role} who blends product thinking, frontend craft, and motion design to make digital work feel clear, alive, and memorable.
+      <SectionIntro label="About" title="Building AI systems for learning and real use.">
+        I am {profile.name}, an {profile.role} focused on RAG systems, Vietnamese NLP, AI assistants, and full-stack products that connect data, language models, and useful user experiences.
       </SectionIntro>
       <motion.div
         className="about-note"
@@ -272,7 +256,7 @@ function About() {
         variants={fadeUp}
       >
         <p>Working style</p>
-        <strong>Start with the human signal, then shape the interface until every transition, word, and state earns its place.</strong>
+        <strong>Start from the real problem, design the retrieval and data flow, then build the backend and interface that make the assistant useful.</strong>
       </motion.div>
       <div className="trait-grid">
         {profile.traits.map((trait, index) => (
@@ -297,8 +281,8 @@ function About() {
 function Skills() {
   return (
     <section id="skills" className="content-section skills-section">
-      <SectionIntro label="Skills" title="A connected skill system, not a checklist.">
-        The work moves across strategy, interface systems, code, and motion so ideas can travel from rough sketch to polished launch.
+      <SectionIntro label="Skills" title="AI, data, and full-stack tools working together.">
+        My skill set connects AI/ML, natural language processing, backend development, real-time applications, and modern frontend stacks.
       </SectionIntro>
       <div className="skill-map">
         {profile.skills.map((skill, index) => (
@@ -326,8 +310,8 @@ function Skills() {
 function Projects() {
   return (
     <section id="projects" className="content-section projects-section">
-      <SectionIntro label="Work" title="Featured projects with room for story and texture.">
-        Replace these project placeholders with your strongest case studies, live links, and measurable outcomes.
+      <SectionIntro label="Work" title="Featured AI work with research context.">
+        A selected project focused on educational technology, retrieval-augmented generation, and practical assistant workflows.
       </SectionIntro>
       <div className="project-stack">
         {profile.projects.map((project, index) => (
@@ -354,7 +338,9 @@ function Projects() {
                 {project.href === "#" ? (
                   <span className="project-link is-disabled">Case study soon</span>
                 ) : (
-                  <a className="project-link" href={project.href}>Project link</a>
+                  <a className="project-link" href={project.href} target="_blank" rel="noreferrer">
+                    {project.linkLabel || "Project link"}
+                  </a>
                 )}
               </div>
             </div>
@@ -368,8 +354,8 @@ function Projects() {
 function Timeline() {
   return (
     <section className="content-section timeline-section">
-      <SectionIntro label="Timeline" title="Milestones that shaped the way I build.">
-        A focused path through education, work, launches, and the moments that sharpened the craft.
+      <SectionIntro label="Timeline" title="The path into AI engineering.">
+        A focused path through AI learning, research work, and applied projects in NLP, RAG, and full-stack development.
       </SectionIntro>
       <div className="timeline">
         {profile.timeline.map((item, index) => (
@@ -398,7 +384,7 @@ function Contact() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setStatus("Message drafted. Replace this with your email or form service when you connect the site.");
+    setStatus("Thanks for the message. You can also reach me directly by email.");
   };
 
   return (
@@ -411,9 +397,9 @@ function Contact() {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="section-label">Contact</p>
-        <h2>Have a story worth shaping into something people can use?</h2>
+        <h2>Want to build an AI assistant or data-driven product?</h2>
         <p>
-          I am open to thoughtful collaborations, design engineering roles, and polished product work that needs both clarity and feeling.
+          I am open to AI engineering internships, research collaboration, and projects around RAG systems, NLP, educational technology, and full-stack AI products.
         </p>
         <form className="contact-form" onSubmit={handleSubmit}>
           <label>
@@ -439,7 +425,7 @@ function Contact() {
             social.href === "#" ? (
               <span className="contact-link is-disabled" key={social.label}>{social.label}</span>
             ) : (
-              <a href={social.href} key={social.label}>
+              <a href={social.href} key={social.label} target="_blank" rel="noreferrer">
                 {social.label}
               </a>
             )
