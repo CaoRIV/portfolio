@@ -49,6 +49,33 @@ const profile = {
       role: "Backend and RAG architecture developer",
       href: "https://github.com/CaoRIV/IT-Smart-Assistant",
       linkLabel: "GitHub"
+    },
+    {
+      title: "MathRAG THPT",
+      description:
+        "A Vietnamese, source-grounded learning assistant for Grade 12 mathematics and THPT exam preparation, retrieving relevant theory, formulas, examples, and exam material before answering.",
+      stack: "FastAPI, React, hybrid retrieval, BM25, FAISS, Ollama",
+      role: "RAG learning assistant",
+      href: "https://github.com/CaoRIV/MathRAG-THPT",
+      linkLabel: "GitHub"
+    },
+    {
+      title: "V-Fashion Insight",
+      description:
+        "A Vietnamese aspect-based sentiment analysis project for fashion reviews across material, design, size, price, and service, with a reproducible data and evaluation workflow.",
+      stack: "Python, Vietnamese NLP, TF-IDF, PhoBERT, Hugging Face",
+      role: "NLP and sentiment analysis",
+      href: "https://github.com/CaoRIV/V-Fashion-Insight",
+      linkLabel: "GitHub"
+    },
+    {
+      title: "AnimalDex",
+      description:
+        "An AI-powered animal recognition web app that classifies uploaded images, shows confidence scores and species information, and lets users save personal collections.",
+      stack: "Next.js, FastAPI, TensorFlow/Keras, Supabase",
+      role: "Computer vision product",
+      href: "https://github.com/CaoRIV/animal-dex",
+      linkLabel: "GitHub"
     }
   ],
   timeline: [
@@ -310,8 +337,8 @@ function Skills() {
 function Projects() {
   return (
     <section id="projects" className="content-section projects-section">
-      <SectionIntro label="Work" title="Featured AI work with research context.">
-        A selected project focused on educational technology, retrieval-augmented generation, and practical assistant workflows.
+      <SectionIntro label="Work" title="Featured AI work across learning, language, and vision.">
+        Selected projects spanning educational assistants, retrieval-augmented generation, Vietnamese NLP, sentiment analysis, and computer vision products.
       </SectionIntro>
       <div className="project-stack">
         {profile.projects.map((project, index) => (
