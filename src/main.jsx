@@ -98,12 +98,11 @@ const profile = {
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 34, scale: 0.98 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] }
+    transition: { type: "spring", stiffness: 92, damping: 20, mass: 0.8 }
   }
 };
 
@@ -140,7 +139,7 @@ function Nav() {
       className="nav-shell"
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
     >
       <a className="brand-mark" href="#top" aria-label="Go to top">
         {getInitials(profile.name)}
@@ -157,13 +156,12 @@ function Nav() {
 
 function Hero({ reduceMotion }) {
   const { scrollYProgress } = useScroll();
-  const yA = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : -110]);
-  const yB = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : 90]);
-  const rotate = useTransform(scrollYProgress, [0, 0.35], [0, reduceMotion ? 0 : 18]);
+  const yA = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : -46]);
+  const yB = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : 32]);
 
   return (
     <section id="top" className="hero-section">
-      <motion.div className="hero-orbit orbit-one" style={{ y: yA, rotate }} />
+      <motion.div className="hero-orbit orbit-one" style={{ y: yA }} />
       <motion.div className="hero-orbit orbit-two" style={{ y: yB }} />
       <div className="hero-grid">
         <motion.div
@@ -201,39 +199,38 @@ function Hero({ reduceMotion }) {
 
         <motion.div
           className="story-stage"
-          initial={{ opacity: 0, x: 40, scale: 0.96 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          aria-label="Abstract interactive portfolio scene"
+          initial={{ opacity: 0, x: 32 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.2 }}
+          aria-label="AI engineering focus index"
         >
           <div className="stage-toolbar">
-            <span />
-            <span />
-            <span />
+            <span>Selected practice</span>
+            <span>2026</span>
           </div>
           <motion.div
             className="stage-card stage-card-a"
-            animate={reduceMotion ? {} : { y: [0, -14, 0], rotate: [-2, 1, -2] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduceMotion ? {} : { y: [0, -6, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>01</span>
-            <strong>Retrieve</strong>
+            <strong>Research</strong>
           </motion.div>
           <motion.div
             className="stage-card stage-card-b"
-            animate={reduceMotion ? {} : { y: [0, 18, 0], rotate: [3, -1, 3] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduceMotion ? {} : { y: [0, 7, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>02</span>
-            <strong>Reason</strong>
+            <strong>Systems</strong>
           </motion.div>
           <motion.div
             className="stage-card stage-card-c"
-            animate={reduceMotion ? {} : { y: [0, -10, 0], x: [0, 8, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduceMotion ? {} : { y: [0, -5, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>03</span>
-            <strong>Build</strong>
+            <strong>Products</strong>
           </motion.div>
           <div className="stage-path" />
           <div className="stage-map">
@@ -245,7 +242,7 @@ function Hero({ reduceMotion }) {
             ))}
           </div>
           <div className="stage-core">
-            <span>RAG + NLP systems</span>
+            <span>Applied AI engineering</span>
           </div>
         </motion.div>
       </div>
