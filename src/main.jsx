@@ -48,7 +48,13 @@ const profile = {
       stack: "Chatbot AI, RAG architecture, backend development",
       role: "Backend and RAG architecture developer",
       href: "https://github.com/CaoRIV/IT-Smart-Assistant",
-      linkLabel: "GitHub"
+      linkLabel: "GitHub",
+      visual: {
+        code: "RAG-01",
+        label: "Assistant pipeline",
+        flow: ["Student question", "FastAPI backend", "RAG retrieval", "Grounded answer"],
+        output: "Answers with faculty context"
+      }
     },
     {
       title: "MathRAG THPT",
@@ -57,7 +63,13 @@ const profile = {
       stack: "FastAPI, React, hybrid retrieval, BM25, FAISS, Ollama",
       role: "RAG learning assistant",
       href: "https://github.com/CaoRIV/MathRAG-THPT",
-      linkLabel: "GitHub"
+      linkLabel: "GitHub",
+      visual: {
+        code: "RAG-02",
+        label: "Math retrieval",
+        flow: ["Math question", "Hybrid search", "Formula context", "Explained answer"],
+        output: "Source-grounded math support"
+      }
     },
     {
       title: "V-Fashion Insight",
@@ -66,7 +78,13 @@ const profile = {
       stack: "Python, Vietnamese NLP, TF-IDF, PhoBERT, Hugging Face",
       role: "NLP and sentiment analysis",
       href: "https://github.com/CaoRIV/V-Fashion-Insight",
-      linkLabel: "GitHub"
+      linkLabel: "GitHub",
+      visual: {
+        code: "NLP-03",
+        label: "Review analysis",
+        flow: ["Fashion review", "Text features", "Aspect model", "Sentiment labels"],
+        output: "Five-aspect classification"
+      }
     },
     {
       title: "AnimalDex",
@@ -75,7 +93,13 @@ const profile = {
       stack: "Next.js, FastAPI, TensorFlow/Keras, Supabase",
       role: "Computer vision product",
       href: "https://github.com/CaoRIV/animal-dex",
-      linkLabel: "GitHub"
+      linkLabel: "GitHub",
+      visual: {
+        code: "CV-04",
+        label: "Vision pipeline",
+        flow: ["Image upload", "TensorFlow model", "Species profile", "Saved collection"],
+        output: "Prediction with confidence"
+      }
     }
   ],
   timeline: [
@@ -347,11 +371,27 @@ function Projects() {
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.8, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="project-art" aria-hidden="true">
-              <div className="art-window" />
-              <div className="art-line line-a" />
-              <div className="art-line line-b" />
-              <div className="art-chip" />
+            <div
+              className="project-art"
+              role="img"
+              aria-label={`${project.title} technical flow: ${project.visual.flow.join(" to ")}`}
+            >
+              <div className="project-visual-heading">
+                <span>{project.visual.code}</span>
+                <strong>{project.visual.label}</strong>
+              </div>
+              <div className="project-flow">
+                {project.visual.flow.map((step, stepIndex) => (
+                  <div className="flow-node" key={step}>
+                    <small>{String(stepIndex + 1).padStart(2, "0")}</small>
+                    <strong>{step}</strong>
+                  </div>
+                ))}
+              </div>
+              <div className="project-visual-output">
+                <span>Output</span>
+                <strong>{project.visual.output}</strong>
+              </div>
             </div>
             <div className="project-copy">
               <p>{project.role}</p>
