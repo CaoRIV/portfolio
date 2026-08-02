@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import "./styles.css";
@@ -145,22 +145,59 @@ function App() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <main>
+    <>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <Nav />
-      <Hero reduceMotion={reduceMotion} />
-      <About />
-      <Skills />
-      <Projects />
-      <Timeline />
-      <Contact />
-    </main>
+      <main id="main-content" tabIndex="-1">
+        <Hero reduceMotion={reduceMotion} />
+        <About />
+        <Skills />
+        <Projects />
+        <Timeline />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
 
 function Nav() {
+  const [activeSection, setActiveSection] = useState("top");
+  const links = [
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "projects", label: "Work" },
+    { id: "contact", label: "Contact" }
+  ];
+
+  useEffect(() => {
+    const sections = ["top", ...links.map((link) => link.id)]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target?.id) {
+          setActiveSection(visible.target.id);
+        }
+      },
+      { rootMargin: "-18% 0px -62% 0px", threshold: [0.05, 0.25, 0.5] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <motion.nav
       className="nav-shell"
+      aria-label="Primary navigation"
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
@@ -168,11 +205,16 @@ function Nav() {
       <a className="brand-mark" href="#top" aria-label="Go to top">
         {getInitials(profile.name)}
       </a>
-      <div className="nav-links" aria-label="Primary navigation">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Work</a>
-        <a href="#contact">Contact</a>
+      <div className="nav-links">
+        {links.map((link) => (
+          <a
+            href={`#${link.id}`}
+            aria-current={activeSection === link.id ? "page" : undefined}
+            key={link.id}
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
     </motion.nav>
   );
@@ -417,7 +459,7 @@ function Projects() {
 
 function Timeline() {
   return (
-    <section className="content-section timeline-section">
+    <section id="timeline" className="content-section timeline-section">
       <SectionIntro label="Timeline" title="The path into AI engineering.">
         A focused path through AI learning, research work, and applied projects in NLP, RAG, and full-stack development.
       </SectionIntro>
@@ -444,11 +486,31 @@ function Timeline() {
 }
 
 function Contact() {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState({ type: "", message: "" });
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setStatus("Thanks for the message. You can also reach me directly by email.");
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name || !email || !message) {
+      setStatus({ type: "error", message: "Please complete all fields before sending." });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setStatus({ type: "error", message: "Please enter a valid email address." });
+      return;
+    }
+
+    setStatus({
+      type: "success",
+      message: "Thanks for the message. You can also reach me directly by email."
+    });
+    form.reset();
   };
 
   return (
@@ -481,7 +543,14 @@ function Contact() {
           <button className="button primary" type="submit">
             Send Message
           </button>
-          {status && <p className="form-status" role="status">{status}</p>}
+          {status.message && (
+            <p
+              className={`form-status ${status.type === "error" ? "is-error" : ""}`}
+              role={status.type === "error" ? "alert" : "status"}
+            >
+              {status.message}
+            </p>
+          )}
         </form>
         <div className="contact-links">
           <a href={`mailto:${profile.email}`}>{profile.email}</a>
@@ -497,6 +566,15 @@ function Contact() {
         </div>
       </motion.div>
     </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <span>{profile.name}</span>
+      <a href="#top">Back to top</a>
+    </footer>
   );
 }
 
