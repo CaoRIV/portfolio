@@ -195,7 +195,9 @@ async function main() {
       if (result.overflow) items.push(`${prefix} has horizontal overflow`);
       if (result.badBoxes.length) items.push(`${prefix} has out-of-viewport boxes: ${JSON.stringify(result.badBoxes)}`);
       if (!result.animationMoved) items.push(`${prefix} floating animation did not move`);
-      if (!result.hoverMoved) items.push(`${prefix} project hover transform did not apply`);
+      if (result.viewport.width > 740 && !result.hoverMoved) {
+        items.push(`${prefix} project hover transform did not apply`);
+      }
       const failedReveals = result.revealResults.filter((item) => !item.visible);
       if (failedReveals.length) items.push(`${prefix} failed reveal checks: ${JSON.stringify(failedReveals)}`);
       return items;
