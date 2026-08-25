@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Logo -->
-<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' width='80' height='80'%3E%3Crect width='120' height='120' fill='%23f5f5f5' rx='20'/%3E%3Cpath d='M 30 60 L 50 40 L 70 55 L 90 30' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='40' r='5' fill='%23333'/%3E%3Ccircle cx='90' cy='30' r='5' fill='%23333'/%3E%3Cpath d='M 30 90 Q 60 75 90 85' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" alt="Portfolio Logo">
+<!-- <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' width='80' height='80'%3E%3Crect width='120' height='120' fill='%23f5f5f5' rx='20'/%3E%3Cpath d='M 30 60 L 50 40 L 70 55 L 90 30' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='40' r='5' fill='%23333'/%3E%3Ccircle cx='90' cy='30' r='5' fill='%23333'/%3E%3Cpath d='M 30 90 Q 60 75 90 85' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" alt="Portfolio Logo"> -->
 
 # Personal Portfolio
 
