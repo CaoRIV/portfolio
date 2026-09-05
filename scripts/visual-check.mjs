@@ -43,51 +43,81 @@ async function checkViewport(browser, viewport) {
 
   await page.goto(url, { waitUntil: "networkidle" });
   await page.waitForTimeout(900);
+  await page.screenshot({
+    path: path.join(outDir, `hero-${viewport.width}x${viewport.height}.png`)
+  });
 
-  const initialMotion = await page.locator(".stage-card-a").evaluate((node) => {
+  const initialMotion = await page.locator(".system-node-a").evaluate((node) => {
     return getComputedStyle(node).transform;
   });
   await page.waitForTimeout(1200);
-  const laterMotion = await page.locator(".stage-card-a").evaluate((node) => {
+  const laterMotion = await page.locator(".system-node-a").evaluate((node) => {
     return getComputedStyle(node).transform;
   });
 
-  await page.locator(".project-panel").first().hover();
+  await page.locator(".project-case").first().hover();
   await page.waitForTimeout(260);
-  const hoverTransform = await page.locator(".project-panel").first().evaluate((node) => {
+  const hoverTransform = await page.locator(".project-case").first().evaluate((node) => {
     return getComputedStyle(node).transform;
   });
 
   const revealSelectors = [
-    "#about .section-intro",
-    "#skills .skill-cluster",
-    "#projects .project-panel",
-    ".timeline-section .timeline-item",
-    "#contact .contact-card"
+    ".practice-strip",
+    "#work .project-case",
+    "#process .process-step",
+    "#skills .skill-index",
+    "#experience .experience-row",
+    "#contact .contact-shell"
   ];
 
   const revealResults = [];
   for (const selector of revealSelectors) {
-    const target = page.locator(selector).first();
-    await target.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(900);
-    revealResults.push(
-      await target.evaluate((node, currentSelector) => {
-        const rect = node.getBoundingClientRect();
-        const style = getComputedStyle(node);
-        return {
-          selector: currentSelector,
-          opacity: Number.parseFloat(style.opacity || "0"),
-          visible:
-            rect.width > 0 &&
-            rect.height > 0 &&
-            rect.bottom > 0 &&
-            rect.top < window.innerHeight &&
-            Number.parseFloat(style.opacity || "0") > 0.8
-        };
-      }, selector)
-    );
+    const targets = page.locator(selector);
+    const count = await targets.count();
+    for (let index = 0; index < count; index += 1) {
+      const target = targets.nth(index);
+      await target.scrollIntoViewIfNeeded();
+      const handle = await target.elementHandle();
+      await page.waitForFunction(
+        (node) => Number.parseFloat(getComputedStyle(node).opacity || "0") > 0.8,
+        handle,
+        { timeout: 2500 }
+      );
+      revealResults.push(
+        await target.evaluate((node, currentSelector) => {
+          const rect = node.getBoundingClientRect();
+          const style = getComputedStyle(node);
+          return {
+            selector: currentSelector,
+            opacity: Number.parseFloat(style.opacity || "0"),
+            visible:
+              rect.width > 0 &&
+              rect.height > 0 &&
+              rect.bottom > 0 &&
+              rect.top < window.innerHeight &&
+              Number.parseFloat(style.opacity || "0") > 0.8
+          };
+        }, `${selector}[${index}]`)
+      );
+    }
   }
+
+  const form = page.locator("#contact form");
+  await form.locator('button[type="submit"]').click();
+  const emptyError = await form.getByRole("alert").textContent();
+  await form.locator('input[name="name"]').fill("Visual Test");
+  await form.locator('input[name="email"]').fill("invalid-email");
+  await form.locator('textarea[name="message"]').fill("Testing the contact flow.");
+  await form.locator('button[type="submit"]').click();
+  const emailError = await form.getByRole("alert").textContent();
+  await form.locator('input[name="email"]').fill("visual@example.com");
+  await form.locator('button[type="submit"]').click();
+  const successMessage = await form.getByRole("status").textContent();
+  const formValidation = {
+    rejectsEmpty: emptyError?.includes("complete all fields") ?? false,
+    rejectsInvalidEmail: emailError?.includes("valid email address") ?? false,
+    acceptsValidSubmission: successMessage?.includes("Thanks for the message") ?? false
+  };
 
   await page.locator("#top").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
@@ -96,12 +126,13 @@ async function checkViewport(browser, viewport) {
     const selectors = [
       ".nav-shell",
       ".hero-copy",
-      ".story-stage",
-      ".trait-tile",
-      ".skill-cluster",
-      ".project-panel",
-      ".timeline-item",
-      ".contact-card"
+      ".hero-system",
+      ".practice-strip",
+      ".project-case",
+      ".process-step",
+      ".skill-index",
+      ".experience-row",
+      ".contact-shell"
     ];
     const boxes = selectors.flatMap((selector) =>
       Array.from(document.querySelectorAll(selector)).map((node) => {
@@ -129,7 +160,13 @@ async function checkViewport(browser, viewport) {
       innerWidth: window.innerWidth,
       scrollWidth: document.documentElement.scrollWidth,
       bodyScrollWidth: document.body.scrollWidth,
-      badBoxes
+      badBoxes,
+      structure: {
+        projectCount: document.querySelectorAll(".project-case").length,
+        processCount: document.querySelectorAll(".process-step").length,
+        hasMainHeading: document.querySelectorAll("main h1").length === 1,
+        hasContactForm: Boolean(document.querySelector("#contact form"))
+      }
     };
   });
 
@@ -150,7 +187,9 @@ async function checkViewport(browser, viewport) {
     badBoxes: metrics.badBoxes,
     animationMoved: initialMotion !== laterMotion,
     hoverMoved: hoverTransform !== "none",
-    revealResults
+    revealResults,
+    structure: metrics.structure,
+    formValidation
   };
 }
 
@@ -196,8 +235,15 @@ async function main() {
       if (result.badBoxes.length) items.push(`${prefix} has out-of-viewport boxes: ${JSON.stringify(result.badBoxes)}`);
       if (!result.animationMoved) items.push(`${prefix} floating animation did not move`);
       if (result.viewport.width > 740 && !result.hoverMoved) {
-        items.push(`${prefix} project hover transform did not apply`);
+        items.push(`${prefix} case study hover transform did not apply`);
       }
+      if (result.structure.projectCount !== 4) items.push(`${prefix} expected 4 project case studies`);
+      if (result.structure.processCount !== 4) items.push(`${prefix} expected 4 process steps`);
+      if (!result.structure.hasMainHeading) items.push(`${prefix} expected exactly one main heading`);
+      if (!result.structure.hasContactForm) items.push(`${prefix} expected a contact form`);
+      if (!result.formValidation.rejectsEmpty) items.push(`${prefix} form accepted empty fields`);
+      if (!result.formValidation.rejectsInvalidEmail) items.push(`${prefix} form accepted an invalid email`);
+      if (!result.formValidation.acceptsValidSubmission) items.push(`${prefix} form rejected valid input`);
       const failedReveals = result.revealResults.filter((item) => !item.visible);
       if (failedReveals.length) items.push(`${prefix} failed reveal checks: ${JSON.stringify(failedReveals)}`);
       return items;

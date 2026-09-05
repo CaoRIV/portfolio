@@ -1,30 +1,119 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import "./styles.css";
 
 const profile = {
   name: "Cao Van Ha",
   role: "AI Engineer",
-  tagline: "Building RAG systems, NLP tools, and full-stack AI products for education.",
+  eyebrow: "AI engineering / RAG / Vietnamese NLP",
+  statement:
+    "I design and build AI systems that turn complex knowledge into useful, grounded products.",
   location: "Vietnam",
   email: "caov77029@gmail.com",
-  availability: "Open to AI engineering internships, research work, and AI product collaboration",
+  availability: "Open to internships, research, and AI product collaboration",
+  practice: [
+    "RAG architecture",
+    "Vietnamese NLP",
+    "AI product engineering",
+    "Full-stack delivery"
+  ],
   metrics: [
-    { value: "RAG", label: "core focus" },
-    { value: "UTC", label: "research context" },
-    { value: "25-26", label: "student research" }
+    { value: "RAG", label: "core system" },
+    { value: "NLP", label: "language layer" },
+    { value: "04", label: "selected projects" }
   ],
   socials: [
     { label: "GitHub", href: "https://github.com/CaoRIV" },
     { label: "X", href: "https://x.com/Cao744604355049" }
   ],
-  traits: [
-    "RAG-focused builder",
-    "NLP problem solver",
-    "Full-stack developer",
-    "Research-minded learner"
+  projects: [
+    {
+      title: "IT Smart Assistant",
+      category: "Education / RAG",
+      outcome: "Faculty-grounded answers",
+      description:
+        "Developing an AI assistant to support lecturers and students at the Faculty of Information Technology for Student Scientific Research 2025-2026 at UTC.",
+      stack: "Chatbot AI, RAG architecture, backend development",
+      role: "Backend and RAG architecture developer",
+      href: "https://github.com/CaoRIV/IT-Smart-Assistant",
+      linkLabel: "View on GitHub",
+      visual: {
+        code: "RAG-01",
+        label: "Assistant pipeline",
+        flow: ["Student question", "FastAPI backend", "RAG retrieval", "Grounded answer"]
+      }
+    },
+    {
+      title: "MathRAG THPT",
+      category: "Learning / Retrieval",
+      outcome: "Source-grounded math support",
+      description:
+        "A Vietnamese, source-grounded learning assistant for Grade 12 mathematics and THPT exam preparation, retrieving relevant theory, formulas, examples, and exam material before answering.",
+      stack: "FastAPI, React, hybrid retrieval, BM25, FAISS, Ollama",
+      role: "RAG learning assistant",
+      href: "https://github.com/CaoRIV/MathRAG-THPT",
+      linkLabel: "View on GitHub",
+      visual: {
+        code: "RAG-02",
+        label: "Math retrieval",
+        flow: ["Math question", "Hybrid search", "Formula context", "Explained answer"]
+      }
+    },
+    {
+      title: "V-Fashion Insight",
+      category: "Vietnamese NLP",
+      outcome: "Five-aspect classification",
+      description:
+        "A Vietnamese aspect-based sentiment analysis project for fashion reviews across material, design, size, price, and service, with a reproducible data and evaluation workflow.",
+      stack: "Python, Vietnamese NLP, TF-IDF, PhoBERT, Hugging Face",
+      role: "NLP and sentiment analysis",
+      href: "https://github.com/CaoRIV/V-Fashion-Insight",
+      linkLabel: "View on GitHub",
+      visual: {
+        code: "NLP-03",
+        label: "Review analysis",
+        flow: ["Fashion review", "Text features", "Aspect model", "Sentiment labels"]
+      }
+    },
+    {
+      title: "AnimalDex",
+      category: "Computer Vision",
+      outcome: "Prediction with confidence",
+      description:
+        "An AI-powered animal recognition web app that classifies uploaded images, shows confidence scores and species information, and lets users save personal collections.",
+      stack: "Next.js, FastAPI, TensorFlow/Keras, Supabase",
+      role: "Computer vision product",
+      href: "https://github.com/CaoRIV/animal-dex",
+      linkLabel: "View on GitHub",
+      visual: {
+        code: "CV-04",
+        label: "Vision pipeline",
+        flow: ["Image upload", "TensorFlow model", "Species profile", "Saved collection"]
+      }
+    }
+  ],
+  process: [
+    {
+      number: "01",
+      title: "Discover",
+      body: "Clarify the user problem, available knowledge, and what a trustworthy answer must contain."
+    },
+    {
+      number: "02",
+      title: "Design",
+      body: "Shape retrieval, model, data, and interface decisions into one testable system."
+    },
+    {
+      number: "03",
+      title: "Build",
+      body: "Implement the backend, evaluation flow, and product surface as a coherent delivery."
+    },
+    {
+      number: "04",
+      title: "Validate",
+      body: "Test answer quality, failure cases, usability, and operational behavior before iteration."
+    }
   ],
   skills: [
     {
@@ -32,86 +121,24 @@ const profile = {
       items: ["RAG Systems", "LLM Integration", "PhoBERT", "TF-IDF", "Data Mining", "Sentiment Analysis"]
     },
     {
-      group: "Full-stack",
+      group: "Product Engineering",
       items: ["FastAPI", "Next.js", "React", "Node.js", "WebSocket", "TypeScript"]
     },
     {
-      group: "Tools",
-      items: ["Python", "Docker", "Redis", "PostgreSQL", "Git", "VS Code"]
-    }
-  ],
-  projects: [
-    {
-      title: "IT Smart Assistant",
-      description:
-        "Developing an AI assistant to support lecturers and students at the Faculty of Information Technology for Student Scientific Research 2025-2026 at UTC.",
-      stack: "Chatbot AI, RAG architecture, backend development",
-      role: "Backend and RAG architecture developer",
-      href: "https://github.com/CaoRIV/IT-Smart-Assistant",
-      linkLabel: "GitHub",
-      visual: {
-        code: "RAG-01",
-        label: "Assistant pipeline",
-        flow: ["Student question", "FastAPI backend", "RAG retrieval", "Grounded answer"],
-        output: "Answers with faculty context"
-      }
-    },
-    {
-      title: "MathRAG THPT",
-      description:
-        "A Vietnamese, source-grounded learning assistant for Grade 12 mathematics and THPT exam preparation, retrieving relevant theory, formulas, examples, and exam material before answering.",
-      stack: "FastAPI, React, hybrid retrieval, BM25, FAISS, Ollama",
-      role: "RAG learning assistant",
-      href: "https://github.com/CaoRIV/MathRAG-THPT",
-      linkLabel: "GitHub",
-      visual: {
-        code: "RAG-02",
-        label: "Math retrieval",
-        flow: ["Math question", "Hybrid search", "Formula context", "Explained answer"],
-        output: "Source-grounded math support"
-      }
-    },
-    {
-      title: "V-Fashion Insight",
-      description:
-        "A Vietnamese aspect-based sentiment analysis project for fashion reviews across material, design, size, price, and service, with a reproducible data and evaluation workflow.",
-      stack: "Python, Vietnamese NLP, TF-IDF, PhoBERT, Hugging Face",
-      role: "NLP and sentiment analysis",
-      href: "https://github.com/CaoRIV/V-Fashion-Insight",
-      linkLabel: "GitHub",
-      visual: {
-        code: "NLP-03",
-        label: "Review analysis",
-        flow: ["Fashion review", "Text features", "Aspect model", "Sentiment labels"],
-        output: "Five-aspect classification"
-      }
-    },
-    {
-      title: "AnimalDex",
-      description:
-        "An AI-powered animal recognition web app that classifies uploaded images, shows confidence scores and species information, and lets users save personal collections.",
-      stack: "Next.js, FastAPI, TensorFlow/Keras, Supabase",
-      role: "Computer vision product",
-      href: "https://github.com/CaoRIV/animal-dex",
-      linkLabel: "GitHub",
-      visual: {
-        code: "CV-04",
-        label: "Vision pipeline",
-        flow: ["Image upload", "TensorFlow model", "Species profile", "Saved collection"],
-        output: "Prediction with confidence"
-      }
+      group: "Infrastructure",
+      items: ["Python", "Docker", "Redis", "PostgreSQL", "Git", "Supabase"]
     }
   ],
   timeline: [
     {
       year: "Year 3",
       title: "Started learning AI",
-      body: "Focused on AI engineering foundations, natural language processing, LLM integration, and building practical systems around real user needs."
+      body: "Focused on AI engineering foundations, natural language processing, LLM integration, and practical systems built around real user needs."
     },
     {
       year: "2025-26",
       title: "IT Smart Assistant research project",
-      body: "Developing backend services and RAG architecture for an AI assistant that supports lecturers and students at UTC's Faculty of Information Technology."
+      body: "Developing backend services and RAG architecture for an assistant supporting lecturers and students at UTC's Faculty of Information Technology."
     },
     {
       year: "Now",
@@ -122,40 +149,28 @@ const profile = {
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 30 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 92, damping: 20, mass: 0.8 }
+    transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] }
   }
 };
-
-function getInitials(name) {
-  const clean = name.replace(/\[|\]/g, "").trim();
-  return clean
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "YN";
-}
 
 function App() {
   const reduceMotion = useReducedMotion();
 
   return (
     <>
-      <a className="skip-link" href="#main-content">
-        Skip to content
-      </a>
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Nav />
       <main id="main-content" tabIndex="-1">
         <Hero reduceMotion={reduceMotion} />
-        <About />
-        <Skills />
+        <PracticeStrip />
         <Projects />
-        <Timeline />
+        <Process />
+        <Skills />
+        <Experience />
         <Contact />
       </main>
       <Footer />
@@ -166,9 +181,10 @@ function App() {
 function Nav() {
   const [activeSection, setActiveSection] = useState("top");
   const links = [
-    { id: "about", label: "About" },
+    { id: "work", label: "Work" },
+    { id: "process", label: "Process" },
     { id: "skills", label: "Skills" },
-    { id: "projects", label: "Work" },
+    { id: "experience", label: "Experience" },
     { id: "contact", label: "Contact" }
   ];
 
@@ -176,20 +192,15 @@ function Nav() {
     const sections = ["top", ...links.map((link) => link.id)]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visible?.target?.id) {
-          setActiveSection(visible.target.id);
-        }
+        if (visible?.target?.id) setActiveSection(visible.target.id);
       },
-      { rootMargin: "-18% 0px -62% 0px", threshold: [0.05, 0.25, 0.5] }
+      { rootMargin: "-18% 0px -68% 0px", threshold: [0.04, 0.2, 0.5] }
     );
-
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
@@ -198,13 +209,11 @@ function Nav() {
     <motion.nav
       className="nav-shell"
       aria-label="Primary navigation"
-      initial={{ opacity: 0, y: -16 }}
+      initial={{ opacity: 0, y: -14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      <a className="brand-mark" href="#top" aria-label="Go to top">
-        {getInitials(profile.name)}
-      </a>
+      <a className="brand-mark" href="#top" aria-label="Go to top">CVH <span>/ AI</span></a>
       <div className="nav-links">
         {links.map((link) => (
           <a
@@ -216,99 +225,64 @@ function Nav() {
           </a>
         ))}
       </div>
+      <a className="nav-cta" href={`mailto:${profile.email}`}>Start a conversation</a>
     </motion.nav>
   );
 }
 
 function Hero({ reduceMotion }) {
-  const { scrollYProgress } = useScroll();
-  const yA = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : -46]);
-  const yB = useTransform(scrollYProgress, [0, 0.38], [0, reduceMotion ? 0 : 32]);
+  const nodes = [
+    { className: "system-node-a", number: "01", label: "Knowledge" },
+    { className: "system-node-b", number: "02", label: "Retrieval" },
+    { className: "system-node-c", number: "03", label: "Interface" }
+  ];
 
   return (
     <section id="top" className="hero-section">
-      <motion.div className="hero-orbit orbit-one" style={{ y: yA }} />
-      <motion.div className="hero-orbit orbit-two" style={{ y: yB }} />
       <div className="hero-grid">
         <motion.div
           className="hero-copy"
           initial="hidden"
           animate="show"
-          variants={{
-            hidden: {},
-            show: { transition: { staggerChildren: 0.14, delayChildren: 0.15 } }
-          }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } } }}
         >
-          <motion.p className="hero-kicker" variants={fadeUp}>
-            {profile.availability}
-          </motion.p>
-          <motion.h1 variants={fadeUp}>
-            {profile.name}
-            <span>{profile.role}</span>
-          </motion.h1>
-          <motion.p className="hero-tagline" variants={fadeUp}>
-            {profile.tagline || "I turn complex ideas into expressive, useful digital experiences."}
-          </motion.p>
+          <motion.p className="hero-eyebrow" variants={fadeUp}>{profile.eyebrow}</motion.p>
+          <motion.h1 variants={fadeUp}>{profile.name}<span>{profile.role}</span></motion.h1>
+          <motion.p className="hero-statement" variants={fadeUp}>{profile.statement}</motion.p>
           <motion.div className="hero-actions" variants={fadeUp}>
-            <a className="button primary" href="#projects">
-              View Work
-            </a>
-            <a className="button secondary" href="#contact">
-              Contact Me
-            </a>
+            <a className="button button-primary" href="#work">Explore selected work <span aria-hidden="true">&#8599;</span></a>
+            <a className="button button-quiet" href={`mailto:${profile.email}`}>Email me</a>
           </motion.div>
-          <motion.div className="hero-note" variants={fadeUp}>
+          <motion.div className="hero-meta" variants={fadeUp}>
             <span>Based in {profile.location}</span>
-            <strong>Focused on practical AI systems that combine retrieval, language understanding, and reliable backend architecture.</strong>
+            <span>{profile.availability}</span>
           </motion.div>
         </motion.div>
 
         <motion.div
-          className="story-stage"
-          initial={{ opacity: 0, x: 32 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.2 }}
-          aria-label="AI engineering focus index"
+          className="hero-system"
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          aria-label="Applied AI engineering system"
         >
-          <div className="stage-toolbar">
-            <span>Selected practice</span>
-            <span>2026</span>
-          </div>
-          <motion.div
-            className="stage-card stage-card-a"
-            animate={reduceMotion ? {} : { y: [0, -6, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span>01</span>
-            <strong>Research</strong>
-          </motion.div>
-          <motion.div
-            className="stage-card stage-card-b"
-            animate={reduceMotion ? {} : { y: [0, 7, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span>02</span>
-            <strong>Systems</strong>
-          </motion.div>
-          <motion.div
-            className="stage-card stage-card-c"
-            animate={reduceMotion ? {} : { y: [0, -5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span>03</span>
-            <strong>Products</strong>
-          </motion.div>
-          <div className="stage-path" />
-          <div className="stage-map">
+          <div className="system-topline"><span>System map / 2026</span><span>Applied intelligence</span></div>
+          <div className="system-connectors" aria-hidden="true" />
+          {nodes.map((node, index) => (
+            <motion.div
+              className={`system-node ${node.className}`}
+              key={node.label}
+              animate={reduceMotion ? {} : { y: [0, index % 2 ? 7 : -7, 0] }}
+              transition={{ duration: 5.6 + index, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <span>{node.number}</span><strong>{node.label}</strong>
+            </motion.div>
+          ))}
+          <div className="system-core"><span>Grounded</span><strong>AI</strong></div>
+          <div className="system-metrics">
             {profile.metrics.map((metric) => (
-              <span key={metric.label}>
-                <strong>{metric.value}</strong>
-                {metric.label}
-              </span>
+              <span key={metric.label}><strong>{metric.value}</strong>{metric.label}</span>
             ))}
-          </div>
-          <div className="stage-core">
-            <span>Applied AI engineering</span>
           </div>
         </motion.div>
       </div>
@@ -316,51 +290,74 @@ function Hero({ reduceMotion }) {
   );
 }
 
-function SectionIntro({ label, title, children }) {
+function PracticeStrip() {
   return (
-    <motion.div
-      className="section-intro"
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.35 }}
-      variants={fadeUp}
-    >
-      <p className="section-label">{label}</p>
-      <h2>{title}</h2>
-      {children && <p>{children}</p>}
-    </motion.div>
+    <section className="practice-strip" aria-label="Core practice">
+      <span className="practice-label">Current practice</span>
+      {profile.practice.map((item, index) => (
+        <span className="practice-item" key={item}><small>{String(index + 1).padStart(2, "0")}</small>{item}</span>
+      ))}
+    </section>
   );
 }
 
-function About() {
+function SectionHeader({ label, title, children }) {
   return (
-    <section id="about" className="content-section about-section">
-      <SectionIntro label="About" title="Building AI systems for learning and real use.">
-        I am {profile.name}, an {profile.role} focused on RAG systems, Vietnamese NLP, AI assistants, and full-stack products that connect data, language models, and useful user experiences.
-      </SectionIntro>
-      <motion.div
-        className="about-note"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.35 }}
-        variants={fadeUp}
-      >
-        <p>Working style</p>
-        <strong>Start from the real problem, design the retrieval and data flow, then build the backend and interface that make the assistant useful.</strong>
-      </motion.div>
-      <div className="trait-grid">
-        {profile.traits.map((trait, index) => (
-          <motion.article
-            className="trait-tile"
-            key={trait}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.45 }}
-            variants={fadeUp}
-            transition={{ delay: index * 0.08 }}
-          >
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <h3>{trait}</h3>
+    <motion.header className="section-header" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.35 }} variants={fadeUp}>
+      <p>{label}</p><h2>{title}</h2>{children && <span>{children}</span>}
+    </motion.header>
+  );
+}
+
+function ProjectCaseStudy({ project, index }) {
+  return (
+    <motion.article
+      className={`project-case ${index % 2 ? "is-reversed" : ""}`}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.18 }}
+      variants={fadeUp}
+    >
+      <div className="project-visual" role="img" aria-label={`${project.title} technical flow: ${project.visual.flow.join(" to ")}`}>
+        <div className="project-visual-head"><span>{project.visual.code}</span><strong>{project.visual.label}</strong></div>
+        <div className="project-flow">
+          {project.visual.flow.map((step, stepIndex) => (
+            <div className="flow-node" key={step}><small>{String(stepIndex + 1).padStart(2, "0")}</small><strong>{step}</strong></div>
+          ))}
+        </div>
+        <div className="project-output"><span>Outcome</span><strong>{project.outcome}</strong></div>
+      </div>
+      <div className="project-copy">
+        <div className="project-index"><span>{String(index + 1).padStart(2, "0")}</span><span>{project.category}</span></div>
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+        <dl className="project-details">
+          <div><dt>Role</dt><dd>{project.role}</dd></div>
+          <div><dt>Stack</dt><dd>{project.stack}</dd></div>
+        </dl>
+        <a className="project-link" href={project.href} target="_blank" rel="noreferrer">{project.linkLabel} <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </motion.article>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="work" className="section-shell work-section">
+      <SectionHeader label="Selected work" title="Systems built for real questions.">Four projects across educational retrieval, Vietnamese language understanding, and computer vision.</SectionHeader>
+      <div className="project-list">{profile.projects.map((project, index) => <ProjectCaseStudy project={project} index={index} key={project.title} />)}</div>
+    </section>
+  );
+}
+
+function Process() {
+  return (
+    <section id="process" className="section-shell process-section">
+      <SectionHeader label="Process" title="From uncertain idea to testable system.">A practical framework for turning data, models, and user needs into one dependable product flow.</SectionHeader>
+      <div className="process-grid">
+        {profile.process.map((step, index) => (
+          <motion.article className="process-step" key={step.number} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp} transition={{ delay: index * 0.06 }}>
+            <span>{step.number}</span><h3>{step.title}</h3><p>{step.body}</p>
           </motion.article>
         ))}
       </div>
@@ -370,26 +367,13 @@ function About() {
 
 function Skills() {
   return (
-    <section id="skills" className="content-section skills-section">
-      <SectionIntro label="Skills" title="AI, data, and full-stack tools working together.">
-        My skill set connects AI/ML, natural language processing, backend development, real-time applications, and modern frontend stacks.
-      </SectionIntro>
-      <div className="skill-map">
+    <section id="skills" className="section-shell skills-section">
+      <SectionHeader label="Capabilities" title="Technical depth, connected end to end.">Tools matter most when they work together as one reliable system.</SectionHeader>
+      <div className="skills-list">
         {profile.skills.map((skill, index) => (
-          <motion.article
-            className="skill-cluster"
-            key={skill.group}
-            initial={{ opacity: 0, y: 44, rotate: index % 2 ? 2 : -2 }}
-            whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.72, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h3>{skill.group}</h3>
-            <div>
-              {skill.items.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
+          <motion.article className="skill-index" key={skill.group} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.45 }} variants={fadeUp}>
+            <span>{String(index + 1).padStart(2, "0")}</span><h3>{skill.group}</h3>
+            <div>{skill.items.map((item) => <span key={item}>{item}</span>)}</div>
           </motion.article>
         ))}
       </div>
@@ -397,87 +381,14 @@ function Skills() {
   );
 }
 
-function Projects() {
+function Experience() {
   return (
-    <section id="projects" className="content-section projects-section">
-      <SectionIntro label="Work" title="Featured AI work across learning, language, and vision.">
-        Selected projects spanning educational assistants, retrieval-augmented generation, Vietnamese NLP, sentiment analysis, and computer vision products.
-      </SectionIntro>
-      <div className="project-stack">
-        {profile.projects.map((project, index) => (
-          <motion.article
-            className="project-panel"
-            key={project.title}
-            initial={{ opacity: 0, y: 70 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.8, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div
-              className="project-art"
-              role="img"
-              aria-label={`${project.title} technical flow: ${project.visual.flow.join(" to ")}`}
-            >
-              <div className="project-visual-heading">
-                <span>{project.visual.code}</span>
-                <strong>{project.visual.label}</strong>
-              </div>
-              <div className="project-flow">
-                {project.visual.flow.map((step, stepIndex) => (
-                  <div className="flow-node" key={step}>
-                    <small>{String(stepIndex + 1).padStart(2, "0")}</small>
-                    <strong>{step}</strong>
-                  </div>
-                ))}
-              </div>
-              <div className="project-visual-output">
-                <span>Output</span>
-                <strong>{project.visual.output}</strong>
-              </div>
-            </div>
-            <div className="project-copy">
-              <p>{project.role}</p>
-              <h3>{project.title}</h3>
-              <span>{project.description}</span>
-              <div className="project-meta">
-                <strong>{project.stack}</strong>
-                {project.href === "#" ? (
-                  <span className="project-link is-disabled">Case study soon</span>
-                ) : (
-                  <a className="project-link" href={project.href} target="_blank" rel="noreferrer">
-                    {project.linkLabel || "Project link"}
-                  </a>
-                )}
-              </div>
-            </div>
-          </motion.article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Timeline() {
-  return (
-    <section id="timeline" className="content-section timeline-section">
-      <SectionIntro label="Timeline" title="The path into AI engineering.">
-        A focused path through AI learning, research work, and applied projects in NLP, RAG, and full-stack development.
-      </SectionIntro>
-      <div className="timeline">
-        {profile.timeline.map((item, index) => (
-          <motion.article
-            className="timeline-item"
-            key={`${item.year}-${item.title}`}
-            initial={{ opacity: 0, y: 36, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <time>{item.year}</time>
-            <div>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </div>
+    <section id="experience" className="section-shell experience-section">
+      <SectionHeader label="Experience" title="A focused path into applied AI.">Learning, research, and product work developed through progressively more complete systems.</SectionHeader>
+      <div className="experience-list">
+        {profile.timeline.map((item) => (
+          <motion.article className="experience-row" key={`${item.year}-${item.title}`} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.45 }} variants={fadeUp}>
+            <time>{item.year}</time><h3>{item.title}</h3><p>{item.body}</p>
           </motion.article>
         ))}
       </div>
@@ -487,7 +398,6 @@ function Timeline() {
 
 function Contact() {
   const [status, setStatus] = useState({ type: "", message: "" });
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -495,75 +405,36 @@ function Contact() {
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
-
     if (!name || !email || !message) {
       setStatus({ type: "error", message: "Please complete all fields before sending." });
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setStatus({ type: "error", message: "Please enter a valid email address." });
       return;
     }
-
-    setStatus({
-      type: "success",
-      message: "Thanks for the message. You can also reach me directly by email."
-    });
+    setStatus({ type: "success", message: "Thanks for the message. You can also reach me directly by email." });
     form.reset();
   };
 
   return (
     <section id="contact" className="contact-section">
-      <motion.div
-        className="contact-card"
-        initial={{ opacity: 0, y: 44, scale: 0.98 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, amount: 0.35 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <p className="section-label">Contact</p>
-        <h2>Want to build an AI assistant or data-driven product?</h2>
-        <p>
-          I am open to AI engineering internships, research collaboration, and projects around RAG systems, NLP, educational technology, and full-stack AI products.
-        </p>
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <label>
-            Name
-            <input type="text" name="name" placeholder="Your name" required />
-          </label>
-          <label>
-            Email
-            <input type="email" name="email" placeholder="you@example.com" required />
-          </label>
-          <label>
-            Message
-            <textarea name="message" placeholder="Tell me what you are building" rows="4" required />
-          </label>
-          <button className="button primary" type="submit">
-            Send Message
-          </button>
-          {status.message && (
-            <p
-              className={`form-status ${status.type === "error" ? "is-error" : ""}`}
-              role={status.type === "error" ? "alert" : "status"}
-            >
-              {status.message}
-            </p>
-          )}
-        </form>
-        <div className="contact-links">
+      <motion.div className="contact-shell" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.16 }} variants={fadeUp}>
+        <div className="contact-copy">
+          <p>Contact / {profile.location}</p><h2>Have a useful AI product in mind?</h2>
+          <span>I am open to engineering internships, research collaboration, and products around RAG, Vietnamese NLP, educational technology, and full-stack AI.</span>
           <a href={`mailto:${profile.email}`}>{profile.email}</a>
-          {profile.socials.map((social) => (
-            social.href === "#" ? (
-              <span className="contact-link is-disabled" key={social.label}>{social.label}</span>
-            ) : (
-              <a href={social.href} key={social.label} target="_blank" rel="noreferrer">
-                {social.label}
-              </a>
-            )
-          ))}
+          <div className="contact-links">
+            {profile.socials.map((social) => <a href={social.href} target="_blank" rel="noreferrer" key={social.label}>{social.label} <span aria-hidden="true">&#8599;</span></a>)}
+          </div>
         </div>
+        <form className="contact-form" onSubmit={handleSubmit} noValidate>
+          <label>Name<input name="name" type="text" autoComplete="name" placeholder="Your name" /></label>
+          <label>Email<input name="email" type="email" autoComplete="email" placeholder="you@example.com" /></label>
+          <label>Project or idea<textarea name="message" rows="5" placeholder="Tell me what you are building" /></label>
+          <button className="button button-primary" type="submit">Send message <span aria-hidden="true">&#8599;</span></button>
+          {status.message && <p className={`form-status ${status.type === "error" ? "is-error" : ""}`} role={status.type === "error" ? "alert" : "status"}>{status.message}</p>}
+        </form>
       </motion.div>
     </section>
   );
@@ -571,11 +442,8 @@ function Contact() {
 
 function Footer() {
   return (
-    <footer className="site-footer">
-      <span>{profile.name}</span>
-      <a href="#top">Back to top</a>
-    </footer>
+    <footer className="site-footer"><span>{profile.name} / AI Engineer</span><span>Designed around real systems and useful outcomes.</span><a href="#top">Back to top</a></footer>
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(<React.StrictMode><App /></React.StrictMode>);
