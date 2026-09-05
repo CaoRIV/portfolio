@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Cao Van Ha | AI Engineer Portfolio
+=======
+<div align="center">
+>>>>>>> d2a31deeb8270b5139bdbf313f4d02a13dd7a531
 
 A responsive, editorial portfolio presenting my work in retrieval-augmented generation, Vietnamese NLP, educational technology, and full-stack AI product development.
 
