@@ -1,44 +1,52 @@
 # Cao Van Ha Portfolio
 
-An interactive personal portfolio for Cao Van Ha, an AI Engineer focused on RAG systems, NLP, full-stack AI products, and educational technology. The project is built with React, Vite, and Framer Motion, presenting a personal profile through a polished one-page experience that combines storytelling, visual rhythm, and smooth motion.
+An editorial one-page portfolio for Cao Van Ha, an AI Engineer focused on RAG systems, Vietnamese NLP, educational technology, and full-stack AI products.
 
-The site is designed as a guided portfolio narrative rather than a static resume page. It introduces Cao Van Ha, explains his working style, highlights AI and full-stack skills, presents featured research-oriented work, shows learning and project milestones, and ends with a focused contact section.
+The experience pairs large case-study storytelling with technical system diagrams. It is inspired by premium product-design portfolios while keeping the content, workflow, and visual language specific to AI engineering.
 
-## Overview
+## Sections
 
-This portfolio is structured around a clear personal story. The first screen introduces the name, role, location, and core positioning, supported by an abstract interactive stage that represents a RAG and NLP workflow. The following sections expand that story through traits, skills, project cards, timeline entries, and a contact form.
-
-The layout is responsive and adapts from wide desktop screens to mobile devices while keeping the main content readable and visually balanced.
-
-## Main Sections
-
-- Hero section with name, AI Engineer role, tagline, location, call-to-action buttons, and an animated RAG/NLP system visual.
-- About section that describes the working process and AI engineering approach.
-- Traits section for key professional qualities such as RAG focus, NLP problem solving, full-stack development, and research-minded learning.
-- Skills section grouped into AI & Data, Full-stack, and Tools.
-- Featured work section for IT Smart Assistant, including role, stack details, and GitHub link.
-- Timeline section for AI learning, the 2025-2026 UTC student research project, and current focus areas.
-- Contact section with email, GitHub, X, and a simple contact form.
+- Hero with a concise engineering position, availability, and animated AI system map.
+- Current practice strip covering RAG architecture, Vietnamese NLP, AI product engineering, and full-stack delivery.
+- Four featured project case studies: IT Smart Assistant, MathRAG THPT, V-Fashion Insight, and AnimalDex.
+- Four-step process: Discover, Design, Build, and Validate.
+- Grouped capability index for AI, product engineering, and infrastructure.
+- Experience timeline covering learning, research, and current focus.
+- Contact section with direct links and client-side form validation.
 
 ## Design Direction
 
-The visual style uses a warm editorial palette, large expressive typography, soft surfaces, subtle grain, and layered panels. The UI takes inspiration from modern product storytelling sites, with a focus on calm spacing, tactile depth, and motion that supports the AI engineering narrative instead of distracting from it.
+The interface uses a warm editorial base, large serif headings, compact sans-serif metadata, restrained signal colors, thin rules, and full-width project bands. Technical pipeline diagrams are generated from the project data, so the visual story remains connected to each system instead of relying on generic stock imagery.
 
-Interactive details such as hover states, scroll reveals, animated cards, focus styles, and form feedback help the page feel more complete and polished.
+Framer Motion provides entrance reveals and a subtle looping Hero animation. Reduced-motion preferences are respected, and the layout adapts across desktop, tablet, and mobile without horizontal page overflow.
 
 ## Tech Stack
 
-- React for the component structure.
-- Vite for the frontend build setup.
-- Framer Motion for page entrance animations, scroll-based movement, and subtle looping motion.
-- Plain CSS for layout, responsive styling, visual surfaces, and interaction states.
+- React 19
+- Vite 6
+- Framer Motion 12
+- Plain CSS
+- Playwright Core for visual smoke testing
 
-## Featured Project
+## Development
 
-The main featured project is IT Smart Assistant, an AI assistant developed to support lecturers and students at the Faculty of Information Technology as part of Student Scientific Research 2025-2026 at UTC. The portfolio highlights Cao Van Ha's role in backend development and RAG architecture.
+Install dependencies and start the local site:
 
-## Current State
+```bash
+pnpm install
+pnpm dev
+```
 
-The portfolio currently includes real personal details, contact links, skill groups, one featured project, and timeline entries based on the available information. More projects, demo links, achievements, and detailed case studies can be added later without changing the overall layout.
+Create a production build:
 
-The project already includes a `.gitignore` for local dependencies, build output, logs, and test artifacts.
+```bash
+pnpm build
+```
+
+Run the responsive visual and interaction checks:
+
+```bash
+node scripts/visual-check.mjs
+```
+
+The visual check covers `1440x1000`, `1024x900`, and `390x844`. It verifies structure, responsive bounds, reveal animations, project hover feedback, contact form validation, browser errors, and horizontal overflow. Screenshots are written to `test-results/`.
