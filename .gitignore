@@ -9,7 +9,6 @@ dist/
 test-results/
 vite-server*.log
 *.log
-.superpowers/
 
 # Environment files
 .env
