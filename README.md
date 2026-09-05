@@ -1,4 +1,4 @@
-# Cao Van Ha Portfolio
+<div align="center">
 
 An editorial one-page portfolio for Cao Van Ha, an AI Engineer focused on RAG systems, Vietnamese NLP, educational technology, and full-stack AI products.
 
