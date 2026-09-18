@@ -255,6 +255,16 @@ textarea:focus-visible {
   height: 1px;
   margin: 6px auto;
   background: var(--ink);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.menu-toggle[aria-expanded="true"] span:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] span:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
 }
 
 .button {
@@ -1173,6 +1183,7 @@ textarea:focus-visible {
   display: grid;
   width: var(--page);
   min-height: 100dvh;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   margin: 0 auto;
   padding: 82px 0 70px;
@@ -1207,6 +1218,7 @@ textarea:focus-visible {
 
 .contact-grid {
   display: grid;
+  min-width: 0;
   grid-template-columns: minmax(480px, 0.95fr) minmax(580px, 1.05fr);
   gap: 120px;
   align-self: end;
@@ -1216,6 +1228,7 @@ textarea:focus-visible {
 
 .contact-details {
   display: grid;
+  min-width: 0;
   gap: 30px;
   align-content: start;
 }
@@ -1223,6 +1236,8 @@ textarea:focus-visible {
 .contact-email {
   width: fit-content;
   font-size: clamp(1.35rem, 2vw, 2rem);
+  max-width: 100%;
+  overflow-wrap: anywhere;
   letter-spacing: -0.03em;
   transition: color 180ms ease;
 }
@@ -1268,11 +1283,13 @@ textarea:focus-visible {
 
 .contact-form {
   display: grid;
+  min-width: 0;
   gap: 24px;
 }
 
 .form-row {
   display: grid;
+  min-width: 0;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
@@ -1289,6 +1306,7 @@ textarea:focus-visible {
 .contact-form input,
 .contact-form textarea {
   width: 100%;
+  min-width: 0;
   border: 0;
   border-bottom: 1px solid var(--line-strong);
   border-radius: 0;
@@ -1611,7 +1629,7 @@ textarea:focus-visible {
   }
 
   .contact-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 56px;
   }
 }
