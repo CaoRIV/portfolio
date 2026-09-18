@@ -2,6 +2,7 @@ import React from "react";
 import { useReducedMotion } from "framer-motion";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
+import { Work } from "./components/Work";
 
 export function App() {
   const reduceMotion = useReducedMotion();
@@ -12,6 +13,7 @@ export function App() {
       <Nav />
       <main id="main-content" tabIndex="-1">
         <Hero reduceMotion={reduceMotion} />
+        <Work />
       </main>
     </>
   );
