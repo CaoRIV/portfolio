@@ -16,16 +16,27 @@ function PipelineArtifact({ flow }) {
   );
 }
 
-function RetrievalArtifact({ flow }) {
+function ChurnArtifact({ visual }) {
   return (
-    <div className="artifact-body retrieval-artifact">
-      <div className="retrieval-node query"><small>01 / Query</small><strong>{flow[0]}</strong></div>
-      <div className="retrieval-branches">
-        <div className="retrieval-node"><small>Sparse</small><strong>BM25</strong></div>
-        <div className="retrieval-node"><small>Dense</small><strong>FAISS</strong></div>
+    <div className="artifact-body churn-artifact">
+      <div className="churn-primary">
+        <small>Recall / Churn = Yes</small>
+        <div className="churn-ring">
+          <strong>{visual.recall}</strong>
+          <span>recall</span>
+        </div>
+        <p>Decision threshold <strong>{visual.threshold}</strong></p>
       </div>
-      <div className="retrieval-node context"><small>03 / Context</small><strong>{flow[2]}</strong></div>
-      <div className="retrieval-node answer"><small>04 / Output</small><strong>{flow[3]}</strong></div>
+      <div className="churn-metrics">
+        {visual.metrics.map((metric) => (
+          <div key={metric.label}><small>{metric.label}</small><strong>{metric.value}</strong></div>
+        ))}
+      </div>
+      <div className="churn-flow">
+        {visual.flow.map((step, index) => (
+          <div key={step}><small>{String(index + 1).padStart(2, "0")}</small><strong>{step}</strong></div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -70,7 +81,7 @@ function ProjectArtifact({ project }) {
         <span>{project.code}</span>
       </div>
       {visual.kind === "pipeline" && <PipelineArtifact flow={visual.flow} />}
-      {visual.kind === "retrieval" && <RetrievalArtifact flow={visual.flow} />}
+      {visual.kind === "churn" && <ChurnArtifact visual={visual} />}
       {visual.kind === "sentiment" && <SentimentArtifact visual={visual} />}
       {visual.kind === "vision" && <VisionArtifact flow={visual.flow} />}
       <div className="artifact-foot">
@@ -86,7 +97,7 @@ function ProjectChapter({ project, index }) {
   return (
     <motion.article
       id={project.id}
-      className={`project-chapter ${index % 2 ? "is-reversed" : ""}`}
+      className={`project-chapter project-${project.visual.kind} ${index % 2 ? "is-reversed" : ""}`}
       initial="hidden"
       whileInView="show"
       viewport={viewport}
@@ -100,9 +111,16 @@ function ProjectChapter({ project, index }) {
           <div><dt>Role</dt><dd>{project.role}</dd></div>
           <div><dt>Stack</dt><dd>{project.stack.join(" / ")}</dd></div>
         </dl>
-        <a className="text-link" href={project.href} target="_blank" rel="noreferrer">
-          View repository <span aria-hidden="true">↗</span>
-        </a>
+        <div className="project-links">
+          <a className="text-link" href={project.href} target="_blank" rel="noreferrer">
+            View repository <span aria-hidden="true">↗</span>
+          </a>
+          {project.demoHref && (
+            <a className="project-demo-link" href={project.demoHref} target="_blank" rel="noreferrer">
+              Open live dashboard <span aria-hidden="true">↗</span>
+            </a>
+          )}
+        </div>
       </div>
       <ProjectArtifact project={project} />
     </motion.article>
@@ -115,7 +133,7 @@ export function Work() {
       <div className="section-heading">
         <p>01 / Selected work</p>
         <h2>Systems built for real questions.</h2>
-        <span>Four projects across educational retrieval, Vietnamese language understanding, and computer vision.</span>
+        <span>Four projects across educational RAG, applied data science, Vietnamese language understanding, and computer vision.</span>
       </div>
       <div className="project-list">
         {profile.projects.map((project, index) => <ProjectChapter project={project} index={index} key={project.id} />)}

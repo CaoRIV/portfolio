@@ -35,23 +35,31 @@ export const profile = {
       }
     },
     {
-      id: "mathrag-thpt",
+      id: "telco-churn-intelligence",
       index: "02",
-      code: "RAG-SYSTEM-02",
-      title: "MathRAG THPT",
-      category: "Learning + Retrieval",
-      status: "Repository available",
-      outcome: "Source-grounded math support",
+      code: "ML-SYSTEM-02",
+      title: "Telco Churn Intelligence",
+      category: "Data Mining + ML",
+      status: "Live dashboard",
+      outcome: "92.8% churn recall",
       description:
-        "A Vietnamese learning assistant for Grade 12 mathematics and THPT exam preparation that retrieves theory, formulas, examples, and exam material before answering.",
-      role: "RAG learning assistant developer",
-      stack: ["FastAPI", "React", "BM25", "FAISS", "Ollama"],
-      href: "https://github.com/CaoRIV/MathRAG-THPT",
+        "An end-to-end telco churn pipeline that connects reproducible data preparation, leakage-safe classification, threshold optimization, and a deployed retention decision dashboard.",
+      role: "Data mining and applied ML developer",
+      stack: ["Python", "scikit-learn", "Streamlit", "pandas", "SciPy"],
+      href: "https://github.com/CaoRIV/customer-churn-data-mining",
+      demoHref: "https://customer-churn-data-mining-vha.streamlit.app/business",
       visual: {
-        kind: "retrieval",
-        label: "Hybrid retrieval",
-        mode: "BM25 + FAISS",
-        flow: ["Math question", "Hybrid search", "Formula context", "Explained answer"]
+        kind: "churn",
+        label: "Retention intelligence",
+        mode: "Threshold 0.30",
+        recall: "92.8%",
+        threshold: "0.30",
+        metrics: [
+          { label: "ROC-AUC", value: "0.842" },
+          { label: "False negatives", value: "27" },
+          { label: "Priority customers", value: "808" }
+        ],
+        flow: ["7,043 customers", "Leakage-safe pipeline", "Risk scoring", "Retention queue"]
       }
     },
     {
@@ -99,10 +107,10 @@ export const profile = {
   capabilities: [
     {
       index: "01",
-      title: "Retrieval systems",
-      tools: "BM25 / FAISS / hybrid search / grounding",
-      evidence: "MathRAG THPT",
-      projectId: "mathrag-thpt"
+      title: "Applied machine learning",
+      tools: "scikit-learn / evaluation / threshold optimization",
+      evidence: "Telco Churn Intelligence",
+      projectId: "telco-churn-intelligence"
     },
     {
       index: "02",
