@@ -1,79 +1,129 @@
+import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
-import { createRequire } from "node:module";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { chromium } from "playwright-core";
 
-const require = createRequire(import.meta.url);
-const { chromium } = require("playwright-core");
-
-const root = "D:/Personal_Portfolio";
-const nodePath =
-  "C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe";
-const vitePath = path.join(root, "node_modules/vite/bin/vite.js");
-const url = "http://127.0.0.1:5173";
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const root = path.dirname(scriptDir);
+const vitePath = path.join(root, "node_modules", "vite", "bin", "vite.js");
 const outDir = path.join(root, "test-results");
+const url = "http://127.0.0.1:4173";
+const viewports = [
+  { width: 1440, height: 1000 },
+  { width: 1024, height: 900 },
+  { width: 390, height: 844 }
+];
+const revealSelectors = [
+  ".hero-copy",
+  ".system-panel",
+  ".project-chapter",
+  ".capabilities-intro",
+  ".capability-row",
+  ".method-intro",
+  ".method-step",
+  ".changelog-copy",
+  ".changelog-row",
+  ".contact-shell"
+];
+const layoutSelectors = [
+  ".nav-shell",
+  ".hero-copy",
+  ".system-panel",
+  ".project-copy",
+  ".project-artifact",
+  ".capability-row",
+  ".method-step",
+  ".changelog-row",
+  ".contact-shell",
+  ".contact-form",
+  ".site-footer"
+];
 
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function waitForServer() {
-  for (let i = 0; i < 60; i += 1) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) return;
-    } catch {
-      await wait(500);
+function browserOptions() {
+  for (const variable of ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH", "CHROME_PATH"]) {
+    const executablePath = process.env[variable];
+    if (executablePath) {
+      if (!existsSync(executablePath)) {
+        throw new Error(`${variable} points to a browser that does not exist: ${executablePath}`);
+      }
+      return [{ executablePath }];
     }
   }
-  throw new Error("Vite server did not respond on port 5173.");
+
+  const candidates = process.platform === "win32"
+    ? [
+        path.join(process.env.PROGRAMFILES || "C:/Program Files", "Google/Chrome/Application/chrome.exe"),
+        path.join(process.env["PROGRAMFILES(X86)"] || "C:/Program Files (x86)", "Google/Chrome/Application/chrome.exe"),
+        path.join(process.env.LOCALAPPDATA || "C:/Users/Public/AppData/Local", "Google/Chrome/Application/chrome.exe"),
+        path.join(process.env.PROGRAMFILES || "C:/Program Files", "Microsoft/Edge/Application/msedge.exe"),
+        path.join(process.env["PROGRAMFILES(X86)"] || "C:/Program Files (x86)", "Microsoft/Edge/Application/msedge.exe")
+      ]
+    : process.platform === "darwin"
+      ? [
+          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+        ]
+      : [
+          "/usr/bin/google-chrome",
+          "/usr/bin/google-chrome-stable",
+          "/usr/bin/chromium",
+          "/usr/bin/chromium-browser",
+          "/usr/bin/microsoft-edge"
+        ];
+  return [...candidates.filter((candidate) => existsSync(candidate)).map((executablePath) => ({ executablePath })), {}];
 }
 
-async function checkViewport(browser, viewport) {
-  const page = await browser.newPage({ viewport });
-  const consoleErrors = [];
-  const pageErrors = [];
+async function launchBrowser() {
+  const failures = [];
+  for (const options of browserOptions()) {
+    try {
+      return await chromium.launch({ ...options, headless: true });
+    } catch (error) {
+      failures.push(`${options.executablePath || "Playwright-managed Chromium"}: ${error.message}`);
+    }
+  }
+  throw new Error(
+    `Could not launch Chromium. Set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH or CHROME_PATH to a usable browser, or install a Playwright-managed Chromium browser. ${failures.join(" | ")}`
+  );
+}
 
+async function waitForServer(server, getOutput) {
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    if (server.exitCode !== null) {
+      throw new Error(`Vite exited before startup. ${getOutput()}`);
+    }
+    if (getOutput().includes(url)) {
+      try {
+        if ((await fetch(url)).ok) return;
+      } catch {
+        // Vite has announced the URL but is not accepting requests yet.
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`Vite did not respond at ${url}. ${getOutput()}`);
+}
+
+function watchConsole(page) {
+  const problems = [];
   page.on("console", (message) => {
-    if (["error", "warning"].includes(message.type())) {
-      consoleErrors.push(`${message.type()}: ${message.text()}`);
+    if (["warning", "error"].includes(message.type())) {
+      problems.push({ type: message.type(), text: message.text(), url: message.location().url });
     }
   });
-  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("pageerror", (error) => problems.push({ type: "pageerror", text: error.message, url: "" }));
+  return problems;
+}
 
-  await page.goto(url, { waitUntil: "networkidle" });
-  await page.waitForTimeout(900);
-  await page.screenshot({
-    path: path.join(outDir, `hero-${viewport.width}x${viewport.height}.png`)
-  });
-
-  const initialMotion = await page.locator(".system-node-a").evaluate((node) => {
-    return getComputedStyle(node).transform;
-  });
-  await page.waitForTimeout(1200);
-  const laterMotion = await page.locator(".system-node-a").evaluate((node) => {
-    return getComputedStyle(node).transform;
-  });
-
-  await page.locator(".project-case").first().hover();
-  await page.waitForTimeout(260);
-  const hoverTransform = await page.locator(".project-case").first().evaluate((node) => {
-    return getComputedStyle(node).transform;
-  });
-
-  const revealSelectors = [
-    ".practice-strip",
-    "#work .project-case",
-    "#process .process-step",
-    "#skills .skill-index",
-    "#experience .experience-row",
-    "#contact .contact-shell"
-  ];
-
-  const revealResults = [];
+async function checkReveals(page, label) {
+  let checked = 0;
   for (const selector of revealSelectors) {
     const targets = page.locator(selector);
     const count = await targets.count();
+    assert.ok(count > 0, `${label}: missing reveal target ${selector}`);
     for (let index = 0; index < count; index += 1) {
       const target = targets.nth(index);
       await target.scrollIntoViewIfNeeded();
@@ -81,182 +131,317 @@ async function checkViewport(browser, viewport) {
       await page.waitForFunction(
         (node) => Number.parseFloat(getComputedStyle(node).opacity || "0") > 0.8,
         handle,
-        { timeout: 2500 }
+        { timeout: 6000 }
       );
-      revealResults.push(
-        await target.evaluate((node, currentSelector) => {
-          const rect = node.getBoundingClientRect();
-          const style = getComputedStyle(node);
-          return {
-            selector: currentSelector,
-            opacity: Number.parseFloat(style.opacity || "0"),
-            visible:
-              rect.width > 0 &&
-              rect.height > 0 &&
-              rect.bottom > 0 &&
-              rect.top < window.innerHeight &&
-              Number.parseFloat(style.opacity || "0") > 0.8
-          };
-        }, `${selector}[${index}]`)
-      );
+      const visible = await target.evaluate((node) => {
+        const box = node.getBoundingClientRect();
+        return box.width > 0 && box.height > 0 && box.bottom > 0 && box.top < innerHeight;
+      });
+      assert.equal(visible, true, `${label}: ${selector}[${index}] did not become visible`);
+      checked += 1;
     }
   }
+  return checked;
+}
 
-  const form = page.locator("#contact form");
-  await form.locator('button[type="submit"]').click();
-  const emptyError = await form.getByRole("alert").textContent();
-  await form.locator('input[name="name"]').fill("Visual Test");
-  await form.locator('input[name="email"]').fill("invalid-email");
-  await form.locator('textarea[name="message"]').fill("Testing the contact flow.");
-  await form.locator('button[type="submit"]').click();
-  const emailError = await form.getByRole("alert").textContent();
-  await form.locator('input[name="email"]').fill("visual@example.com");
-  await form.locator('button[type="submit"]').click();
-  const successMessage = await form.getByRole("status").textContent();
-  const formValidation = {
-    rejectsEmpty: emptyError?.includes("complete all fields") ?? false,
-    rejectsInvalidEmail: emailError?.includes("valid email address") ?? false,
-    acceptsValidSubmission: successMessage?.includes("Thanks for the message") ?? false
+async function checkStructure(page, label) {
+  const expected = {
+    "main h1": 1,
+    ".project-chapter": 4,
+    ".project-artifact": 4,
+    ".capability-row": 4,
+    ".method-step": 4,
+    ".changelog-row": 3,
+    "#contact form": 1
   };
+  for (const [selector, count] of Object.entries(expected)) {
+    assert.equal(await page.locator(selector).count(), count, `${label}: ${selector} count`);
+  }
+  for (const id of ["work", "capabilities", "changelog", "contact"]) {
+    assert.equal(await page.locator(`#${id}`).count(), 1, `${label}: missing #${id} target`);
+    assert.equal(await page.locator(`.nav-links a[href="#${id}"]`).count(), 1, `${label}: missing #${id} navigation link`);
+  }
+}
 
-  await page.locator("#top").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(300);
-
-  const metrics = await page.evaluate(() => {
-    const selectors = [
-      ".nav-shell",
-      ".hero-copy",
-      ".hero-system",
-      ".practice-strip",
-      ".project-case",
-      ".process-step",
-      ".skill-index",
-      ".experience-row",
-      ".contact-shell"
-    ];
-    const boxes = selectors.flatMap((selector) =>
-      Array.from(document.querySelectorAll(selector)).map((node) => {
-        const rect = node.getBoundingClientRect();
-        return {
-          selector,
-          width: rect.width,
-          height: rect.height,
-          left: rect.left,
-          right: rect.right,
-          top: rect.top,
-          bottom: rect.bottom
-        };
-      })
-    );
-    const badBoxes = boxes.filter((box) => {
-      return (
-        box.width <= 0 ||
-        box.height <= 0 ||
-        box.left < -2 ||
-        box.right > window.innerWidth + 2
-      );
+async function checkLayout(page, label) {
+  const metrics = await page.evaluate((selectors) => {
+    const boxes = selectors.flatMap((selector) => {
+      const nodes = Array.from(document.querySelectorAll(selector));
+      return nodes.map((node, index) => {
+        const box = node.getBoundingClientRect();
+        return { selector: `${selector}[${index}]`, width: box.width, height: box.height, left: box.left, right: box.right };
+      });
     });
     return {
-      innerWidth: window.innerWidth,
-      scrollWidth: document.documentElement.scrollWidth,
-      bodyScrollWidth: document.body.scrollWidth,
-      badBoxes,
-      structure: {
-        projectCount: document.querySelectorAll(".project-case").length,
-        processCount: document.querySelectorAll(".process-step").length,
-        hasMainHeading: document.querySelectorAll("main h1").length === 1,
-        hasContactForm: Boolean(document.querySelector("#contact form"))
-      }
+      innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+      boxes
     };
+  }, layoutSelectors);
+
+  assert.ok(metrics.documentWidth <= metrics.innerWidth + 2, `${label}: document horizontal overflow ${JSON.stringify(metrics)}`);
+  assert.ok(metrics.bodyWidth <= metrics.innerWidth + 2, `${label}: body horizontal overflow ${JSON.stringify(metrics)}`);
+  for (const selector of layoutSelectors) {
+    assert.ok(metrics.boxes.some((box) => box.selector.startsWith(`${selector}[`)), `${label}: missing layout target ${selector}`);
+  }
+  const badBoxes = metrics.boxes.filter((box) =>
+    box.width <= 0 || box.height <= 0 || box.left < -2 || box.right > metrics.innerWidth + 2
+  );
+  assert.deepEqual(badBoxes, [], `${label}: out-of-viewport boxes`);
+}
+
+async function checkHeroMotion(page, label, reduced) {
+  const node = page.locator(".system-node-a");
+  const first = await node.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(600);
+  const second = await node.evaluate((element) => getComputedStyle(element).transform);
+  if (reduced) assert.equal(second, first, `${label}: hero node moved with reduced motion`);
+  else assert.notEqual(second, first, `${label}: hero node did not move`);
+}
+
+async function checkProjectLinks(page, label) {
+  const links = await page.locator(".project-chapter .text-link").evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute("href"))
+  );
+  assert.equal(links.length, 4, `${label}: project link count`);
+  assert.equal(new Set(links).size, 4, `${label}: duplicate project destinations`);
+  for (const href of links) {
+    const destination = new URL(href);
+    assert.equal(destination.protocol, "https:", `${label}: project link must use HTTPS`);
+    assert.equal(destination.hostname, "github.com", `${label}: project link must go to GitHub`);
+    assert.ok(destination.pathname.split("/").filter(Boolean).length >= 2, `${label}: project link must identify a repository`);
+  }
+}
+
+async function checkEvidenceLinks(page, label) {
+  const links = page.locator(".capability-row");
+  for (let index = 0; index < await links.count(); index += 1) {
+    const link = links.nth(index);
+    const href = await link.getAttribute("href");
+    assert.match(href || "", /^#[a-z0-9-]+$/, `${label}: evidence link must be an anchor`);
+    assert.equal(await page.locator(`.project-chapter${href}`).count(), 1, `${label}: evidence target ${href} missing`);
+    await link.click();
+    await page.waitForFunction((hash) => location.hash === hash, href);
+    await page.waitForFunction((hash) => {
+      const box = document.querySelector(hash).getBoundingClientRect();
+      return box.bottom > 0 && box.top < innerHeight;
+    }, href);
+  }
+}
+
+async function checkActiveNav(page, label) {
+  for (const id of ["work", "capabilities", "changelog", "contact"]) {
+    await page.evaluate((targetId) => {
+      const target = document.getElementById(targetId);
+      const top = target.getBoundingClientRect().top + scrollY - innerHeight * 0.1;
+      scrollTo({ top, behavior: "instant" });
+    }, id);
+    try {
+      await page.waitForFunction(
+        (targetId) => document.querySelector(`.nav-links a[href="#${targetId}"]`)?.getAttribute("aria-current") === "page",
+        id,
+        { timeout: 5000 }
+      );
+    } catch (error) {
+      const state = await page.evaluate(() => ({
+        scrollY,
+        innerHeight,
+        active: Array.from(document.querySelectorAll(".nav-links a[aria-current]")).map((link) => link.getAttribute("href")),
+        sections: ["work", "capabilities", "changelog", "contact"].map((sectionId) => {
+          const box = document.getElementById(sectionId).getBoundingClientRect();
+          return { id: sectionId, top: box.top, bottom: box.bottom, height: box.height };
+        })
+      }));
+      throw new Error(`${label}: active navigation did not select ${id}: ${JSON.stringify(state)}`, { cause: error });
+    }
+  }
+}
+
+async function checkMobileMenu(page, label) {
+  const toggle = page.locator(".menu-toggle");
+  const nav = page.locator("#mobile-navigation");
+  assert.equal(await toggle.isVisible(), true, `${label}: menu button hidden`);
+  const box = await toggle.boundingBox();
+  assert.ok(box.width >= 44 && box.height >= 44, `${label}: menu button smaller than 44x44`);
+  assert.equal(await toggle.getAttribute("aria-expanded"), "false");
+  assert.equal(await nav.isVisible(), false, `${label}: closed menu visible`);
+  const closedIcon = await toggle.locator("span").first().evaluate((node) => getComputedStyle(node).transform);
+
+  await toggle.click();
+  assert.equal(await toggle.getAttribute("aria-expanded"), "true");
+  assert.equal(await nav.isVisible(), true, `${label}: open menu hidden`);
+  await page.waitForTimeout(230);
+  const openIcon = await toggle.locator("span").first().evaluate((node) => getComputedStyle(node).transform);
+  assert.notEqual(openIcon, closedIcon, `${label}: menu icon did not change`);
+
+  await page.keyboard.press("Escape");
+  assert.equal(await toggle.getAttribute("aria-expanded"), "false", `${label}: Escape did not close menu`);
+  assert.equal(await nav.isVisible(), false, `${label}: menu stayed visible after Escape`);
+
+  await toggle.click();
+  await nav.locator('a[href="#work"]').click();
+  assert.equal(await toggle.getAttribute("aria-expanded"), "false", `${label}: selecting link did not close menu`);
+  assert.equal(await nav.isVisible(), false, `${label}: menu stayed visible after link selection`);
+  assert.equal(new URL(page.url()).hash, "#work", `${label}: mobile link did not navigate`);
+}
+
+async function checkContactForm(page, label, problems) {
+  const form = page.locator("#contact form");
+  const button = form.locator('button[type="submit"]');
+  const name = form.locator('input[name="name"]');
+  const email = form.locator('input[name="email"]');
+  const message = form.locator('textarea[name="message"]');
+
+  await button.click();
+  assert.match(await form.getByRole("alert").textContent(), /Complete all fields before sending\./, `${label}: empty form validation`);
+  await name.fill("Visual Check");
+  await email.fill("invalid-email");
+  await message.fill("Testing the contact flow.");
+  await button.click();
+  assert.match(await form.getByRole("alert").textContent(), /Enter a valid email address\./, `${label}: invalid email validation`);
+
+  let sent;
+  await page.route("**/api/contact", async (route) => {
+    sent = { method: route.request().method(), body: route.request().postDataJSON() };
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ message: "Message received. I will reply by email." })
+    });
   });
+  await email.fill("visual@example.com");
+  await button.click();
+  assert.equal(await button.isDisabled(), true, `${label}: button enabled while pending`);
+  assert.match(await button.textContent(), /Transmitting/, `${label}: pending button label`);
+  assert.match(await form.getByRole("status").textContent(), /Transmitting/, `${label}: pending announcement`);
+  await form.getByRole("status").filter({ hasText: "Message received. I will reply by email." }).waitFor();
+  assert.equal(sent.method, "POST", `${label}: contact request method`);
+  assert.deepEqual(sent.body, {
+    name: "Visual Check",
+    email: "visual@example.com",
+    message: "Testing the contact flow.",
+    company: ""
+  }, `${label}: contact request payload`);
+  assert.equal(await name.inputValue(), "", `${label}: name not reset after success`);
+  assert.equal(await email.inputValue(), "", `${label}: email not reset after success`);
+  assert.equal(await message.inputValue(), "", `${label}: message not reset after success`);
+  await page.unroute("**/api/contact");
+  assert.deepEqual(problems, [], `${label}: console or page errors before simulated failure`);
 
-  await page.screenshot({
-    path: path.join(outDir, `viewport-${viewport.width}x${viewport.height}.png`),
-    fullPage: true
+  await page.route("**/api/contact", async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "Please use the direct email link." })
+    });
   });
+  await name.fill("Retry Sender");
+  await email.fill("retry@example.com");
+  await message.fill("Keep this message available for retry.");
+  await button.click();
+  await form.getByRole("alert").filter({ hasText: "Please use the direct email link." }).waitFor();
+  assert.equal(await name.inputValue(), "Retry Sender", `${label}: name lost after API failure`);
+  assert.equal(await email.inputValue(), "retry@example.com", `${label}: email lost after API failure`);
+  assert.equal(await message.inputValue(), "Keep this message available for retry.", `${label}: message lost after API failure`);
+  assert.equal(await page.locator('a.contact-email[href^="mailto:"]').isVisible(), true, `${label}: direct email fallback hidden`);
+  await page.unroute("**/api/contact");
 
-  await page.close();
+  // Chromium reports the deliberately mocked 503 as a resource error.
+  const expectedHttpFailure = problems.filter((problem) =>
+    problem.type === "error" &&
+    problem.text.includes("503 (Service Unavailable)") &&
+    problem.url.endsWith("/api/contact")
+  );
+  assert.ok(expectedHttpFailure.length <= 1, `${label}: multiple contact API resource errors`);
+  const unexpected = problems.filter((problem) => !expectedHttpFailure.includes(problem));
+  assert.deepEqual(unexpected, [], `${label}: unexpected console or page errors`);
+}
 
-  return {
-    viewport,
-    consoleErrors,
-    pageErrors,
-    overflow:
-      metrics.scrollWidth > viewport.width + 2 ||
-      metrics.bodyScrollWidth > viewport.width + 2,
-    badBoxes: metrics.badBoxes,
-    animationMoved: initialMotion !== laterMotion,
-    hoverMoved: hoverTransform !== "none",
-    revealResults,
-    structure: metrics.structure,
-    formValidation
-  };
+async function checkViewport(browser, viewport) {
+  const label = `${viewport.width}x${viewport.height}`;
+  const page = await browser.newPage({ viewport });
+  const problems = watchConsole(page);
+  try {
+    await page.goto(url, { waitUntil: "networkidle" });
+    await checkStructure(page, label);
+    const revealCount = await checkReveals(page, label);
+    await checkLayout(page, label);
+    if (viewport.width > 740) {
+      await checkHeroMotion(page, label, false);
+      await checkProjectLinks(page, label);
+      await checkActiveNav(page, label);
+      await checkEvidenceLinks(page, label);
+    } else {
+      await checkMobileMenu(page, label);
+    }
+    await page.screenshot({ path: path.join(outDir, `viewport-${label}.png`), fullPage: true });
+    await checkContactForm(page, label, problems);
+    await checkLayout(page, label);
+    console.log(`PASS ${label}: structure, ${revealCount} reveals, layout, interactions, contact form`);
+  } finally {
+    await page.close();
+  }
+}
+
+async function checkReducedMotion(browser, viewport) {
+  const label = `${viewport.width}x${viewport.height} reduced motion`;
+  const page = await browser.newPage({ viewport });
+  const problems = watchConsole(page);
+  try {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(url, { waitUntil: "networkidle" });
+    await checkHeroMotion(page, label, true);
+    assert.equal(
+      await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior),
+      "auto",
+      `${label}: document scroll behavior`
+    );
+    const revealCount = await checkReveals(page, label);
+    await checkLayout(page, label);
+    const knownWarning = "You have Reduced Motion enabled on your device.";
+    assert.deepEqual(
+      problems.filter((problem) => !(problem.type === "warning" && problem.text.startsWith(knownWarning))),
+      [],
+      `${label}: unexpected console or page errors`
+    );
+    console.log(`PASS ${label}: stationary hero, auto scrolling, ${revealCount} visible reveals (${problems.length} known Framer Motion warning)`);
+  } finally {
+    await page.close();
+  }
 }
 
 async function main() {
   await mkdir(outDir, { recursive: true });
-
-  const server = spawn(nodePath, [vitePath, "--host", "127.0.0.1", "--port", "5173"], {
+  let serverOutput = "";
+  const server = spawn(process.execPath, [vitePath, "--host", "127.0.0.1", "--port", "4173", "--strictPort"], {
     cwd: root,
     stdio: ["ignore", "pipe", "pipe"],
     windowsHide: true
   });
+  server.stdout.on("data", (data) => { serverOutput += data.toString(); });
+  server.stderr.on("data", (data) => { serverOutput += data.toString(); });
 
-  let serverOutput = "";
-  server.stdout.on("data", (data) => {
-    serverOutput += data.toString();
-  });
-  server.stderr.on("data", (data) => {
-    serverOutput += data.toString();
-  });
-
+  let browser;
   try {
-    await waitForServer();
-    const browser = await chromium.launch({
-      executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe"
-    });
-    const viewports = [
-      { width: 1440, height: 1000 },
-      { width: 1024, height: 900 },
-      { width: 390, height: 844 }
-    ];
-    const results = [];
+    await waitForServer(server, () => serverOutput);
+    browser = await launchBrowser();
     for (const viewport of viewports) {
-      results.push(await checkViewport(browser, viewport));
+      await checkViewport(browser, viewport);
+      await checkReducedMotion(browser, viewport);
     }
-    await browser.close();
-
-    const failures = results.flatMap((result) => {
-      const prefix = `${result.viewport.width}x${result.viewport.height}`;
-      const items = [];
-      if (result.consoleErrors.length) items.push(`${prefix} console: ${result.consoleErrors.join(" | ")}`);
-      if (result.pageErrors.length) items.push(`${prefix} pageerror: ${result.pageErrors.join(" | ")}`);
-      if (result.overflow) items.push(`${prefix} has horizontal overflow`);
-      if (result.badBoxes.length) items.push(`${prefix} has out-of-viewport boxes: ${JSON.stringify(result.badBoxes)}`);
-      if (!result.animationMoved) items.push(`${prefix} floating animation did not move`);
-      if (result.viewport.width > 740 && !result.hoverMoved) {
-        items.push(`${prefix} case study hover transform did not apply`);
-      }
-      if (result.structure.projectCount !== 4) items.push(`${prefix} expected 4 project case studies`);
-      if (result.structure.processCount !== 4) items.push(`${prefix} expected 4 process steps`);
-      if (!result.structure.hasMainHeading) items.push(`${prefix} expected exactly one main heading`);
-      if (!result.structure.hasContactForm) items.push(`${prefix} expected a contact form`);
-      if (!result.formValidation.rejectsEmpty) items.push(`${prefix} form accepted empty fields`);
-      if (!result.formValidation.rejectsInvalidEmail) items.push(`${prefix} form accepted an invalid email`);
-      if (!result.formValidation.acceptsValidSubmission) items.push(`${prefix} form rejected valid input`);
-      const failedReveals = result.revealResults.filter((item) => !item.visible);
-      if (failedReveals.length) items.push(`${prefix} failed reveal checks: ${JSON.stringify(failedReveals)}`);
-      return items;
-    });
-
-    console.log(JSON.stringify({ serverOutput, results, failures }, null, 2));
-    if (failures.length) process.exitCode = 1;
+    console.log("PASS visual-check: all three viewports and reduced-motion checks passed.");
   } finally {
-    server.kill();
+    try {
+      await browser?.close();
+    } finally {
+      server.kill();
+    }
   }
 }
 
 main().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });
