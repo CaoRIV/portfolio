@@ -4,6 +4,7 @@ import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { Work } from "./components/Work";
 import { Capabilities } from "./components/Capabilities";
+import { Changelog, Contact, Footer, Method } from "./components/Journey";
 
 export function App() {
   const reduceMotion = useReducedMotion();
@@ -16,7 +17,11 @@ export function App() {
         <Hero reduceMotion={reduceMotion} />
         <Work />
         <Capabilities />
+        <Method />
+        <Changelog />
+        <Contact />
       </main>
+      <Footer />
     </>
   );
 }
