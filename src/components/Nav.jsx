@@ -24,7 +24,7 @@ export function Nav() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (visible?.target?.id) setActiveSection(visible.target.id);
       },
-      { rootMargin: "-16% 0px -68% 0px", threshold: [0.05, 0.2, 0.5] }
+      { rootMargin: "-16% 0px -68% 0px", threshold: [0, 0.05, 0.2, 0.5] }
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();

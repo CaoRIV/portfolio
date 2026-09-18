@@ -2047,6 +2047,12 @@ textarea:focus-visible {
   }
 }
 
+@media (max-width: 340px) {
+  .hero-copy h1 {
+    font-size: 18.5vw;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
