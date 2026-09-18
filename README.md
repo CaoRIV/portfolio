@@ -1,25 +1,43 @@
+# Cao Van Ha — Developer Systems Portfolio
 
+A one-page portfolio for Cao Van Ha, AI Engineer. Its visual system uses graphite surfaces, off-white type, acid-green signals, technical diagrams, and restrained motion to present real AI engineering work.
 
-[GitHub](https://github.com/CaoRIV) | [X](https://x.com/Cao744604355049) | [Email](mailto:caov77029@gmail.com)
+## Page structure
 
-<h1 align="center">Cao Van Ha Portfolio</h1>
-<p align="center">A premium one-page showcase for AI engineering work and product thinking.</p>
+- **Hero:** focus on grounded AI systems.
+- **Work:** four project chapters covering educational retrieval, Vietnamese NLP, and computer vision.
+- **Capabilities:** technical strengths linked to project evidence.
+- **Operating Model:** discover, design, build, and validate.
+- **Changelog:** current learning and project milestones.
+- **Contact:** a message form and a direct email link.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-111827?style=flat-square" alt="version" />
-  <img src="https://img.shields.io/badge/react-19-149eca?style=flat-square" alt="react" />
-  <img src="https://img.shields.io/badge/vite-6-7c3aed?style=flat-square" alt="vite" />
-  <img src="https://img.shields.io/badge/framer--motion-12-ec4899?style=flat-square" alt="framer motion" />
-  <img src="https://img.shields.io/badge/javascript-CSS-HTML-f59e0b?style=flat-square" alt="javascript css html" />
-</p>
+## Run locally
 
-<p align="center">
-  <img src="https://img.shields.io/badge/platform-web-0f766e?style=flat-square" alt="platform web" />
-  <img src="https://img.shields.io/badge/build-ready-15803d?style=flat-square" alt="build ready" />
-  <img src="https://img.shields.io/badge/tests-not%20configured-9a3412?style=flat-square" alt="tests not configured" />
-  <img src="https://img.shields.io/badge/license-not%20specified-6b7280?style=flat-square" alt="license not specified" />
-</p>
+Requires Node.js and pnpm. Install dependencies with `pnpm install`.
 
-## Product Description
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the Vite development server. |
+| `pnpm build` | Create the production site in `dist/`. |
+| `pnpm preview` | Preview the production build locally. |
+| `pnpm visual-check` | Run the Playwright responsive and interaction smoke check. |
 
-This portfolio presents Cao Van Ha’s work as an AI Engineer across RAG systems, Vietnamese NLP, and education-focused products. It combines clean storytelling, selected case studies, and motion-driven UI to communicate both technical depth and product execution
+The contact form posts to `/api/contact`, a Vercel Function that validates submissions and sends email through Resend. Plain `pnpm dev` does not execute Vercel functions; use `vercel dev` for a local end-to-end function check. The visible [direct email link](mailto:caov77029@gmail.com) remains available when the form cannot send.
+
+## Contact configuration
+
+Configure these environment variables in Vercel, using [.env.example](.env.example) as the reference:
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key used only by the server function. |
+| `RESEND_FROM_EMAIL` | Sender address on a Resend-verified domain. |
+| `CONTACT_TO_EMAIL` | Recipient address; defaults to `caov77029@gmail.com` when unset. |
+
+The form reports success only after the API confirms the Resend request. Configuration or delivery failures return an error and leave the entered text available to retry.
+
+## Vercel deployment
+
+Use the **Vite** framework preset, `pnpm build` as the build command, and `dist` as the output directory. Set the contact environment variables for each environment where the form should work.
+
+Built with React, Framer Motion, Vite, and a Vercel Node function.
