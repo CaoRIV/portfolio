@@ -81,13 +81,14 @@ export function Changelog() {
 export function Contact() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
+    const company = String(data.get("company") || "").trim();
 
     if (!name || !email || !message) {
       setStatus({ type: "error", message: "Complete all fields before sending." });
@@ -98,10 +99,34 @@ export function Contact() {
       return;
     }
 
-    const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    setStatus({ type: "success", message: "Opening your email app with the message prepared." });
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    setStatus({ type: "pending", message: "Transmitting your message…" });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, company })
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setStatus({
+          type: "error",
+          message: typeof result.error === "string" && result.error.trim()
+            ? result.error
+            : "Message could not be sent. Please use the direct email link."
+        });
+        return;
+      }
+      if (typeof result.message !== "string" || !result.message.trim()) {
+        setStatus({ type: "error", message: "Delivery could not be confirmed. Please use the direct email link." });
+        return;
+      }
+
+      form.reset();
+      setStatus({ type: "success", message: result.message });
+    } catch {
+      setStatus({ type: "error", message: "Message could not be sent. Please use the direct email link." });
+    }
   };
 
   return (
@@ -138,8 +163,9 @@ export function Contact() {
               <label>Email<input name="email" type="email" autoComplete="email" placeholder="you@example.com" maxLength="160" /></label>
             </div>
             <label>Project or idea<textarea name="message" rows="5" placeholder="Tell me what you are building" maxLength="4000" /></label>
+            <label className="honeypot" aria-hidden="true">Company<input name="company" type="text" tabIndex={-1} autoComplete="off" /></label>
             <div className="form-action">
-              <button className="button button-primary" type="submit">Prepare email <span aria-hidden="true">↗</span></button>
+              <button className="button button-primary" type="submit" disabled={status.type === "pending"}>{status.type === "pending" ? "Transmitting" : "Send message"} <span aria-hidden="true">↗</span></button>
               {status.message && (
                 <p className={`form-status is-${status.type}`} role={status.type === "error" ? "alert" : "status"}>{status.message}</p>
               )}
