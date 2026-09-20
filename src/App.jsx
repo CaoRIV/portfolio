@@ -3,7 +3,7 @@ import { MotionConfig, useReducedMotion } from "framer-motion";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { Work } from "./components/Work";
-import { Capabilities } from "./components/Capabilities";
+import { Capabilities, Credentials } from "./components/Capabilities";
 import { Changelog, Contact, Footer, Method } from "./components/Journey";
 
 export function App() {
@@ -17,6 +17,7 @@ export function App() {
         <Hero reduceMotion={reduceMotion} />
         <Work />
         <Capabilities />
+        <Credentials />
         <Method />
         <Changelog />
         <Contact />
