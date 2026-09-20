@@ -22,6 +22,8 @@ const revealSelectors = [
   ".project-chapter",
   ".capabilities-intro",
   ".capability-row",
+  ".credentials-intro",
+  ".credential-row",
   ".method-intro",
   ".method-step",
   ".changelog-copy",
@@ -35,6 +37,7 @@ const layoutSelectors = [
   ".project-copy",
   ".project-artifact",
   ".capability-row",
+  ".credential-row",
   ".method-step",
   ".changelog-row",
   ".contact-shell",
@@ -150,6 +153,7 @@ async function checkStructure(page, label) {
     ".project-chapter": 4,
     ".project-artifact": 4,
     ".capability-row": 4,
+    ".credential-row": 2,
     ".method-step": 4,
     ".changelog-row": 3,
     "#contact form": 1
@@ -157,7 +161,7 @@ async function checkStructure(page, label) {
   for (const [selector, count] of Object.entries(expected)) {
     assert.equal(await page.locator(selector).count(), count, `${label}: ${selector} count`);
   }
-  for (const id of ["work", "capabilities", "changelog", "contact"]) {
+  for (const id of ["work", "capabilities", "credentials", "changelog", "contact"]) {
     assert.equal(await page.locator(`#${id}`).count(), 1, `${label}: missing #${id} target`);
     assert.equal(await page.locator(`.nav-links a[href="#${id}"]`).count(), 1, `${label}: missing #${id} navigation link`);
   }
@@ -214,6 +218,24 @@ async function checkProjectLinks(page, label) {
   }
 }
 
+async function checkCredentialLinks(page, label) {
+  const links = page.locator(".credential-row");
+  assert.equal(await links.count(), 2, label + ": credential link count");
+  const destinations = [];
+  for (let index = 0; index < await links.count(); index += 1) {
+    const link = links.nth(index);
+    const href = await link.getAttribute("href");
+    const destination = new URL(href);
+    destinations.push(destination.href);
+    assert.equal(destination.protocol, "https:", label + ": credential link must use HTTPS");
+    assert.equal(destination.hostname, "www.coursera.org", label + ": credential link must go to Coursera");
+    assert.match(destination.pathname, /^\/account\/accomplishments\/verify\/[A-Z0-9]+$/, label + ": invalid Coursera verification path");
+    assert.equal(await link.getAttribute("target"), "_blank", label + ": credential link target");
+    assert.match(await link.locator(".credential-status").textContent(), /Verified/i, label + ": credential status");
+  }
+  assert.equal(new Set(destinations).size, 2, label + ": duplicate credential destinations");
+}
+
 async function checkEvidenceLinks(page, label) {
   const links = page.locator(".capability-row");
   for (let index = 0; index < await links.count(); index += 1) {
@@ -231,7 +253,7 @@ async function checkEvidenceLinks(page, label) {
 }
 
 async function checkActiveNav(page, label) {
-  for (const id of ["work", "capabilities", "changelog", "contact"]) {
+  for (const id of ["work", "capabilities", "credentials", "changelog", "contact"]) {
     await page.evaluate((targetId) => {
       const target = document.getElementById(targetId);
       const top = target.getBoundingClientRect().top + scrollY - innerHeight * 0.1;
@@ -248,7 +270,7 @@ async function checkActiveNav(page, label) {
         scrollY,
         innerHeight,
         active: Array.from(document.querySelectorAll(".nav-links a[aria-current]")).map((link) => link.getAttribute("href")),
-        sections: ["work", "capabilities", "changelog", "contact"].map((sectionId) => {
+        sections: ["work", "capabilities", "credentials", "changelog", "contact"].map((sectionId) => {
           const box = document.getElementById(sectionId).getBoundingClientRect();
           return { id: sectionId, top: box.top, bottom: box.bottom, height: box.height };
         })
@@ -368,6 +390,7 @@ async function checkViewport(browser, viewport) {
     await checkStructure(page, label);
     const revealCount = await checkReveals(page, label);
     await checkLayout(page, label);
+    await checkCredentialLinks(page, label);
     if (viewport.width > 740) {
       await checkHeroMotion(page, label, false);
       await checkProjectLinks(page, label);

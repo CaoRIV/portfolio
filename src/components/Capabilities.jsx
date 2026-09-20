@@ -42,3 +42,57 @@ export function Capabilities() {
     </section>
   );
 }
+
+export function Credentials() {
+  return (
+    <section id="credentials" className="section-shell credentials-section">
+      <motion.div
+        className="credentials-intro"
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        variants={reveal}
+      >
+        <div>
+          <p className="section-index">03 / Credentials</p>
+          <h2>Verified learning,<br />kept in context.</h2>
+        </div>
+        <p>Course credentials support the work; shipped systems remain the primary proof.</p>
+      </motion.div>
+
+      <div className="credentials-registry">
+        {profile.credentials.map((credential, index) => (
+          <motion.a
+            href={credential.href}
+            className="credential-row"
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Verify ${credential.title} credential from ${credential.issuer}`}
+            key={credential.credentialId}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={reveal}
+            transition={{ delay: index * 0.05 }}
+          >
+            <span className="credential-index">{credential.index}</span>
+            <div className="credential-name">
+              <p>{credential.type} / {credential.issuer}</p>
+              <h3>{credential.title}</h3>
+            </div>
+            <div className="credential-scope">
+              <small>Focus</small>
+              <p>{credential.focus.join(" / ")}</p>
+            </div>
+            <div className="credential-proof">
+              <span className="credential-status"><i aria-hidden="true" /> Verified</span>
+              <time dateTime={credential.issuedISO}>{credential.issued}</time>
+              <small>{credential.credentialId}</small>
+              <strong>Verify credential <span aria-hidden="true">↗</span></strong>
+            </div>
+          </motion.a>
+        ))}
+      </div>
+    </section>
+  );
+}
