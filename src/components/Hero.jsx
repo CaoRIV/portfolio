@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import { profile } from "../data/profile";
 import { reveal } from "../animation";
 
-const nodes = [
-  { className: "system-node-a", code: "01 / INPUT", label: "Knowledge" },
-  { className: "system-node-b", code: "02 / SEARCH", label: "Retrieval" },
-  { className: "system-node-c", code: "03 / CONTEXT", label: "Grounding" },
-  { className: "system-node-d", code: "04 / CHECK", label: "Evaluation" },
-  { className: "system-node-e", code: "05 / OUTPUT", label: "Product" }
+const stages = [
+  { code: "01", eyebrow: "Input", label: "Knowledge", state: "indexed" },
+  { code: "02", eyebrow: "Search", label: "Retrieval", state: "matched" },
+  { code: "03", eyebrow: "Context", label: "Grounding", state: "active" },
+  { code: "04", eyebrow: "Check", label: "Evaluation", state: "verified" },
+  { code: "05", eyebrow: "Output", label: "Product", state: "ready" }
 ];
 
 export function Hero({ reduceMotion }) {
@@ -54,31 +54,40 @@ export function Hero({ reduceMotion }) {
             <span>cvh-core-01</span>
           </div>
           <div className="system-map">
-            <svg viewBox="0 0 500 420" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M92 118 C150 118 174 190 250 206" />
-              <path d="M408 118 C350 118 326 190 250 206" />
-              <path className="signal-path" d="M250 217 L250 287" />
-              <path d="M250 323 C195 340 150 352 92 357" />
-              <path d="M250 323 C305 340 350 352 408 357" />
-            </svg>
-            {nodes.map((node, index) => (
-              <motion.div
-                className={`system-node ${node.className}`}
-                key={node.label}
-                animate={reduceMotion ? {} : { y: [0, index % 2 ? 4 : -4, 0] }}
-                transition={{ duration: 5.5 + index * 0.6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <small>{node.code}</small>
-                <strong>{node.label}</strong>
-              </motion.div>
-            ))}
-            <motion.div
-              className="system-core"
-              animate={reduceMotion ? {} : { boxShadow: ["0 0 0 8px rgba(197,244,93,.06)", "0 0 0 14px rgba(197,244,93,.015)", "0 0 0 8px rgba(197,244,93,.06)"] }}
-              transition={{ duration: 3.2, repeat: Infinity }}
-            >
-              AI
-            </motion.div>
+            <div className="system-trace-head">
+              <span>Live execution trace</span>
+              <div className="trace-wave" aria-hidden="true">
+                {Array.from({ length: 10 }, (_, index) => <i key={index} />)}
+              </div>
+            </div>
+            <div className="system-stage-list">
+              <motion.span
+                className="system-packet"
+                aria-hidden="true"
+                animate={reduceMotion ? {} : { y: [0, 228] }}
+                transition={{ duration: 4.8, repeat: Infinity, ease: "linear" }}
+              />
+              {stages.map((stage, index) => (
+                <motion.div
+                  className={["system-stage", index === 0 && "system-node-a", index === 2 && "is-active"].filter(Boolean).join(" ")}
+                  key={stage.label}
+                  animate={reduceMotion || index !== 0 ? {} : { y: [0, -2, 0] }}
+                  transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <small className="stage-code">{stage.code}</small>
+                  <span className="stage-marker" aria-hidden="true" />
+                  <span className="stage-copy">
+                    <small>{stage.eyebrow}</small>
+                    <strong>{stage.label}</strong>
+                  </span>
+                  <small className="stage-state">{stage.state}</small>
+                </motion.div>
+              ))}
+            </div>
+            <div className="system-result">
+              <span><i aria-hidden="true" /> Trace complete</span>
+              <strong>Context retained → answer grounded</strong>
+            </div>
           </div>
           <div className="system-telemetry">
             <div><small>Focus</small><strong>RAG / NLP</strong></div>

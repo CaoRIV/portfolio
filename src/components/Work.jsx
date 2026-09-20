@@ -55,18 +55,48 @@ function SentimentArtifact({ visual }) {
   );
 }
 
-function VisionArtifact({ flow }) {
+function VisionArtifact({ visual }) {
   return (
     <div className="artifact-body vision-artifact">
       <div className="vision-frame">
-        <span className="scan-line" />
-        <div className="vision-shape"><span /><span /><span /></div>
-        <small>Image input / scan</small>
+        <div className="vision-frame-head">
+          <small>Illustrative scan / model surface</small>
+          <span><i aria-hidden="true" /> Model ready</span>
+        </div>
+        <span className="vision-corner vision-corner-nw" aria-hidden="true" />
+        <span className="vision-corner vision-corner-ne" aria-hidden="true" />
+        <span className="vision-corner vision-corner-sw" aria-hidden="true" />
+        <span className="vision-corner vision-corner-se" aria-hidden="true" />
+        <span className="scan-line" aria-hidden="true" />
+        <svg className="vision-subject" viewBox="0 0 320 260" role="img" aria-label="Abstract animal recognition target">
+          <path className="subject-fill" d="M78 104 60 45l58 33c13-9 27-13 42-13s29 4 42 13l58-33-18 59c13 18 19 38 17 59-4 45-44 78-99 78s-95-33-99-78c-2-21 4-41 17-59Z" />
+          <path className="subject-outline" d="M78 104 60 45l58 33c13-9 27-13 42-13s29 4 42 13l58-33-18 59c13 18 19 38 17 59-4 45-44 78-99 78s-95-33-99-78c-2-21 4-41 17-59Z" />
+          <path className="subject-detail" d="m82 63 8 34m148-34-8 34M115 120l26 8m64-8-26 8m-61 20 22 5m62-5-22 5m-20-62v34m-17 42 17 11 17-11m-17 11v20m0 0c-12 0-22-5-28-13m28 13c12 0 22-5 28-13M93 179l43 5m-49 13 49-5m91-13-43 5m49 13-49-5" />
+          <path className="subject-eye" d="M109 139c10-8 22-8 32 0-8 10-24 10-32 0Zm70 0c10-8 22-8 32 0-8 10-24 10-32 0Z" />
+        </svg>
+        <div className="vision-frame-label">
+          <small>Input channel</small>
+          <strong>Species recognition</strong>
+        </div>
       </div>
-      <div className="vision-flow">
-        {flow.slice(1).map((step, index) => (
-          <div key={step}><small>{String(index + 2).padStart(2, "0")}</small><strong>{step}</strong></div>
-        ))}
+      <div className="vision-analysis">
+        <div className="vision-analysis-head">
+          <small>Model evidence</small>
+          <strong>Classification surface</strong>
+        </div>
+        <div className="vision-metrics">
+          <div><strong>{visual.testAccuracy}</strong><small>Test accuracy</small></div>
+          <div><strong>{visual.classes}</strong><small>Species classes</small></div>
+        </div>
+        <div className="vision-flow">
+          {visual.flow.map((step, index) => (
+            <div key={step}>
+              <small>{String(index + 1).padStart(2, "0")}</small>
+              <strong>{step}</strong>
+              <span><i aria-hidden="true" /> ready</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -83,7 +113,7 @@ function ProjectArtifact({ project }) {
       {visual.kind === "pipeline" && <PipelineArtifact flow={visual.flow} />}
       {visual.kind === "churn" && <ChurnArtifact visual={visual} />}
       {visual.kind === "sentiment" && <SentimentArtifact visual={visual} />}
-      {visual.kind === "vision" && <VisionArtifact flow={visual.flow} />}
+      {visual.kind === "vision" && <VisionArtifact visual={visual} />}
       <div className="artifact-foot">
         <div><small>Domain</small><strong>{project.category}</strong></div>
         <div><small>Mode</small><strong>{visual.mode}</strong></div>

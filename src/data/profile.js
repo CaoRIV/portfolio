@@ -100,6 +100,8 @@ export const profile = {
         kind: "vision",
         label: "Vision pipeline",
         mode: "Image classification",
+        testAccuracy: "91.7%",
+        classes: "90",
         flow: ["Image upload", "TensorFlow model", "Species profile", "Saved collection"]
       }
     }
