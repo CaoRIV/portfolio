@@ -134,6 +134,30 @@ export const profile = {
       projectId: "animaldex"
     }
   ],
+  credentials: [
+    {
+      index: "01",
+      title: "Machine Learning with Python",
+      issuer: "IBM",
+      type: "Course certificate",
+      issued: "September 14, 2026",
+      issuedISO: "2026-09-14",
+      credentialId: "9TTR1XAXQA01",
+      focus: ["scikit-learn", "model evaluation", "supervised + unsupervised learning"],
+      href: "https://www.coursera.org/account/accomplishments/verify/9TTR1XAXQA01"
+    },
+    {
+      index: "02",
+      title: "Natural Language Processing with Classification and Vector Spaces",
+      issuer: "DeepLearning.AI",
+      type: "Course certificate",
+      issued: "September 13, 2026",
+      issuedISO: "2026-09-13",
+      credentialId: "UC4Z9HEE9HDM",
+      focus: ["NLP", "classification", "word vectors + embeddings"],
+      href: "https://www.coursera.org/account/accomplishments/verify/UC4Z9HEE9HDM"
+    }
+  ],
   process: [
     {
       index: "01",

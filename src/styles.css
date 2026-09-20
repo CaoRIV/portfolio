@@ -615,6 +615,7 @@ textarea:focus-visible {
 
 .section-heading h2,
 .capabilities-intro h2,
+.credentials-intro h2,
 .method-intro h2,
 .changelog-copy h2,
 .contact-heading h2 {
@@ -631,6 +632,7 @@ textarea:focus-visible {
 
 .section-heading > span,
 .capabilities-intro > p,
+.credentials-intro > p,
 .method-intro > p {
   max-width: 600px;
   justify-self: end;
@@ -1084,6 +1086,7 @@ textarea:focus-visible {
 }
 
 .capabilities-intro,
+.credentials-intro,
 .method-intro {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(350px, 0.85fr);
@@ -1092,11 +1095,13 @@ textarea:focus-visible {
 }
 
 .capabilities-intro h2,
+.credentials-intro h2,
 .method-intro h2 {
   max-width: 1050px;
 }
 
 .capabilities-intro > p,
+.credentials-intro > p,
 .method-intro > p {
   margin: 0 0 10px;
 }
@@ -1149,6 +1154,134 @@ textarea:focus-visible {
 }
 
 .capability-row strong span {
+  color: var(--signal);
+}
+
+.credentials-section {
+  padding-top: clamp(150px, 12vw, 220px);
+}
+
+.credentials-registry {
+  margin-top: 82px;
+  border-top: 1px solid var(--ink);
+}
+
+.credential-row {
+  position: relative;
+  display: grid;
+  min-height: 190px;
+  grid-template-columns: 74px minmax(0, 1.2fr) minmax(240px, 0.8fr) minmax(210px, 0.65fr);
+  gap: 32px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  transition: background 220ms ease, padding 220ms ease;
+}
+
+.credential-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  transform: scaleY(0);
+  background: var(--signal);
+  transition: transform 220ms ease;
+}
+
+.credential-row:hover {
+  padding: 0 24px;
+  background: var(--surface);
+}
+
+.credential-row:hover::before {
+  transform: scaleY(1);
+}
+
+.credential-index {
+  color: var(--signal);
+  font: 0.63rem var(--mono);
+}
+
+.credential-name {
+  min-width: 0;
+}
+
+.credential-name > p,
+.credential-scope small,
+.credential-proof small,
+.credential-proof time {
+  color: var(--muted);
+  font: 0.52rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.credential-name > p {
+  margin: 0 0 12px;
+  color: var(--signal);
+}
+
+.credential-name h3 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(1.65rem, 2.3vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.credential-scope {
+  min-width: 0;
+}
+
+.credential-scope small {
+  display: block;
+  margin-bottom: 13px;
+}
+
+.credential-scope p {
+  margin: 0;
+  color: #b6bbb1;
+  font: 0.68rem var(--mono);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.credential-proof {
+  display: grid;
+  justify-items: end;
+  gap: 9px;
+  text-align: right;
+}
+
+.credential-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--signal);
+  font: 0.58rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.credential-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 14px rgba(197, 244, 93, 0.45);
+}
+
+.credential-proof strong {
+  margin-top: 7px;
+  color: var(--warm);
+  font: 700 0.63rem var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.credential-proof strong span {
   color: var(--signal);
 }
 
@@ -1681,12 +1814,14 @@ textarea:focus-visible {
   }
 
   .capabilities-intro,
+  .credentials-intro,
   .method-intro {
     grid-template-columns: 1fr;
     gap: 36px;
   }
 
   .capabilities-intro > p,
+  .credentials-intro > p,
   .method-intro > p {
     justify-self: start;
   }
@@ -1882,6 +2017,7 @@ textarea:focus-visible {
 
   .section-heading h2,
   .capabilities-intro h2,
+  .credentials-intro h2,
   .method-intro h2,
   .changelog-copy h2 {
     font-size: clamp(3.35rem, 14.5vw, 5.5rem);
@@ -1889,6 +2025,7 @@ textarea:focus-visible {
 
   .section-heading > span,
   .capabilities-intro > p,
+  .credentials-intro > p,
   .method-intro > p {
     font-size: 1rem;
   }
@@ -2072,6 +2209,37 @@ textarea:focus-visible {
   .capability-row strong {
     grid-column: 2;
     padding: 0;
+  }
+
+  .credentials-registry {
+    margin-top: 60px;
+  }
+
+  .credential-row {
+    min-height: 0;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px 12px;
+    padding: 28px 0;
+  }
+
+  .credential-row:hover {
+    padding: 28px 12px;
+  }
+
+  .credential-name,
+  .credential-scope,
+  .credential-proof {
+    grid-column: 2;
+  }
+
+  .credential-proof {
+    justify-items: start;
+    margin-top: 4px;
+    text-align: left;
+  }
+
+  .credential-name h3 {
+    font-size: clamp(1.55rem, 8vw, 2.25rem);
   }
 
   .method-section {

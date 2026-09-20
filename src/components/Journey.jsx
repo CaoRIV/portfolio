@@ -14,7 +14,7 @@ export function Method() {
         variants={reveal}
       >
         <div>
-          <p className="section-index">03 / Operating model</p>
+          <p className="section-index">04 / Operating model</p>
           <h2>Build with<br />evidence.</h2>
         </div>
         <p>A compact method for joining user needs, retrieval, models, interface, and evaluation into one dependable product flow.</p>
@@ -51,7 +51,7 @@ export function Changelog() {
         viewport={viewport}
         variants={reveal}
       >
-        <p className="section-index">04 / Changelog</p>
+        <p className="section-index">05 / Changelog</p>
         <h2>A focused path into applied AI.</h2>
         <p>Progress measured through increasingly complete systems rather than disconnected experiments.</p>
       </motion.div>
@@ -139,7 +139,7 @@ export function Contact() {
         variants={reveal}
       >
         <div className="contact-heading">
-          <p>05 / Open channel <span>{profile.location} / {profile.timezone}</span></p>
+          <p>06 / Open channel <span>{profile.location} / {profile.timezone}</span></p>
           <h2>Let’s ship<br />something <span>useful.</span></h2>
         </div>
 
