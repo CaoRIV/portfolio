@@ -150,14 +150,14 @@ export const profile = {
     },
     {
       index: "02",
-      title: "Natural Language Processing with Classification and Vector Spaces",
+      title: "Natural Language Processing",
       issuer: "DeepLearning.AI",
-      type: "Course certificate",
-      issued: "September 13, 2026",
-      issuedISO: "2026-09-13",
-      credentialId: "UC4Z9HEE9HDM",
-      focus: ["NLP", "classification", "word vectors + embeddings"],
-      href: "https://www.coursera.org/account/accomplishments/verify/UC4Z9HEE9HDM"
+      type: "Specialization certificate",
+      issued: "September 25, 2026",
+      issuedISO: "2026-09-25",
+      credentialId: "3TS1WBA3193Q",
+      focus: ["4-course specialization", "probabilistic + sequence models", "attention + applied NLP"],
+      href: "https://www.coursera.org/account/accomplishments/specialization/3TS1WBA3193Q"
     }
   ],
   process: [
