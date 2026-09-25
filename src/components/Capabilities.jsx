@@ -57,7 +57,7 @@ export function Credentials() {
           <p className="section-index">03 / Credentials</p>
           <h2>Verified learning,<br />kept in context.</h2>
         </div>
-        <p>Course credentials support the work; shipped systems remain the primary proof.</p>
+        <p>Course and specialization credentials support the work; shipped systems remain the primary proof.</p>
       </motion.div>
 
       <div className="credentials-registry">

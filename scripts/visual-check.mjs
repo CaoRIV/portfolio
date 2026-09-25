@@ -229,7 +229,7 @@ async function checkCredentialLinks(page, label) {
     destinations.push(destination.href);
     assert.equal(destination.protocol, "https:", label + ": credential link must use HTTPS");
     assert.equal(destination.hostname, "www.coursera.org", label + ": credential link must go to Coursera");
-    assert.match(destination.pathname, /^\/account\/accomplishments\/verify\/[A-Z0-9]+$/, label + ": invalid Coursera verification path");
+    assert.match(destination.pathname, /^\/account\/accomplishments\/(?:verify|specialization)\/[A-Z0-9]+$/, label + ": invalid Coursera verification path");
     assert.equal(await link.getAttribute("target"), "_blank", label + ": credential link target");
     assert.match(await link.locator(".credential-status").textContent(), /Verified/i, label + ": credential status");
   }
